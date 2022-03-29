@@ -47,7 +47,7 @@ def download_blob(bucket_name, source_blob_name, destination_file_name):
     blob.download_to_filename(destination_file_name)
 
 
-def ReadwiseConverter(BaseConverter):
+def StrConverter(BaseConverter):
     def convert(
         self,
         text: str,
@@ -88,7 +88,11 @@ def ReadwiseConverter(BaseConverter):
 
                 # remove lines having > 40% of words as digits AND not ending with a period(.)
                 if remove_numeric_tables:
-                    if words and len(digits) / len(words) > 0.4 and not line.strip().endswith("."):
+                    if (
+                        words
+                        and len(digits) / len(words) > 0.4
+                        and not line.strip().endswith(".")
+                    ):
                         logger.debug(f"Removing line '{line}' from {text}")
                         continue
 
