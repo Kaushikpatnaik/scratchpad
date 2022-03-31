@@ -17,6 +17,28 @@ from youtube_converter import generate_youtube_transcript_docs
 from website_converter import scrape_website_to_dict
 
 
+def preprocess_readwise(file_list: Sequence[str], processor_args: dict = {}):
+    """
+    Given readwise export process the csv
+    """
+
+    processor = PreProcessor(
+        clean_empty_lines=processor_args.get("clean_empty_lines", True),
+        clean_whitespace=processor_args.get("clean_whitespace", True),
+        clean_header_footer=processor_args.get("clean_header_footer", True),
+        split_by=processor_args.get("split_by", "word"),
+        split_length=processor_args.get("split_lenght", 200),
+        split_respect_sentence_boundary=processor_args.get(
+            "split_respect_sentence_boundary", True
+        ),
+        split_overlap=processor_args.get("split_overlap", 3),
+    )
+
+    readwise_docs = generate_readwise_docs(file_list)
+
+    return processor.process(readwise_docs)
+
+
 def preprocess_text(file_list: Sequence[str], processor_args: dict = {}):
     """
     Given list of documents to process, convert and preprocess them. Post processing,

@@ -32,6 +32,8 @@ str_converter = StrConverter()
 
 
 def _generate_docs(ext_filepaths, converter):
+    if len(ext_filepaths) == 0:
+        return []
     docs = []
     for filepath in ext_filepaths:
         filename = filepath.split("/")[-1]
