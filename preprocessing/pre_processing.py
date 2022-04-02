@@ -6,15 +6,15 @@ database
 from typing import Sequence
 from haystack.nodes import PreProcessor
 
-from document_converter import (
+from preprocessing.document_converter import (
     generate_readwise_docs,
     generate_docx_docs,
     generate_md_docs,
     generate_pdf_docs,
     generate_txt_docs,
 )
-from youtube_converter import generate_youtube_transcript_docs
-from website_converter import scrape_website_to_dict
+from preprocessing.youtube_converter import generate_youtube_transcript_docs
+from preprocessing.website_converter import scrape_website_to_dict
 
 
 def preprocess_readwise(file_list: Sequence[str], processor_args: dict = {}):
@@ -34,7 +34,7 @@ def preprocess_readwise(file_list: Sequence[str], processor_args: dict = {}):
         split_overlap=processor_args.get("split_overlap", 3),
     )
 
-    readwise_docs = generate_readwise_docs(file_list)
+    readwise_docs = generate_readwise_docs(file_list[0])
 
     return processor.process(readwise_docs)
 

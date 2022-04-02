@@ -20,13 +20,13 @@ from haystack.nodes import (
     MarkdownConverter,
 )
 
-from utils import list_all_files_folder, StrConverter
+from preprocessing.utils import list_all_files_folder, StrConverter
 
 
 logger = logging.getLogger(__name__)
 text_converter = TextConverter(remove_numeric_tables=True)
 pdf_converter = PDFToTextConverter(remove_numeric_tables=True)
-docx_converter = DocxToTextConverter(remove_numeric_tables=True)
+docx_converter = DocxToTextConverter()
 markdown_converter = MarkdownConverter(remove_numeric_tables=True)
 str_converter = StrConverter()
 
@@ -92,7 +92,7 @@ def generate_readwise_docs(readwise_file_path):
     data["index"] = data.index
     data = data.replace(np.nan, "", regex=True)
     data = data[["Highlight", "Book Title", "Book Author", "doc_hash", "index"]]
-    data.columns = ["raw_string", "title", "author", "doc_hash", "index", "metadata"]
+    data.columns = ["raw_string", "title", "author", "doc_hash", "index"]
 
     readwise_docs = []
     for idx, row in data.iterrows():

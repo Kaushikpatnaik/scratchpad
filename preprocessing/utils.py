@@ -1,6 +1,7 @@
 import glob
 import os
 import logging
+from typing import List, Optional, Any, Dict
 
 from google.cloud import storage
 from haystack.nodes.file_converter import BaseConverter
@@ -47,7 +48,7 @@ def download_blob(bucket_name, source_blob_name, destination_file_name):
     blob.download_to_filename(destination_file_name)
 
 
-def StrConverter(BaseConverter):
+class StrConverter(BaseConverter):
     def convert(
         self,
         text: str,
@@ -111,4 +112,4 @@ def StrConverter(BaseConverter):
 
         text = "".join(cleaned_pages)
         document = {"content": text, "content_type": "text", "meta": meta}
-        return [document]
+        return document
