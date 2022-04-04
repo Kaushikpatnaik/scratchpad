@@ -2,9 +2,11 @@ import os
 import glob
 import logging
 
+from haystack.document_stores import ElasticsearchDocumentStore
+
 from preprocessing.pre_processing import preprocess_readwise, preprocess_text
-from database.write_and_update_store import write_docs_and_update_embed, document_store
-from retrievers import get_es_retriever, get_nn_retriever
+from database.write_and_update_store import write_docs_and_update_embed
+from retrievers import get_nn_retriever
 
 
 logger = logging.getLogger(__name__)
@@ -15,6 +17,9 @@ DATA_LOC = "/home/dexter89_kp/Desktop/scratchpad/data"
 READWISE_FILE_NAME = "readwise-data_02022022.csv"
 EMAILS_LOC = "emails"
 
+document_store = ElasticsearchDocumentStore(
+    host="localhost", username="", password="", index="document", similarity="cosine"
+)
 st_retriever = get_nn_retriever(document_store, RETRIEVER)
 
 readwise_proc_docs = preprocess_readwise([os.path.join(DATA_LOC, READWISE_FILE_NAME)])

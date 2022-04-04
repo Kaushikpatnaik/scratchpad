@@ -44,19 +44,19 @@ dense_ranker = dense_retriever_ranker_search_pipeline(
 app = FastAPI()
 
 
-@app.get("/parse/url/")
+@app.get("/parse/url/{url:path}")
 def parse_website(url: str):
     url_processed_data = preprocess_add_websites([url])
     write_docs_and_update_embed(document_store, url_processed_data, st_retriever)
 
 
-@app.get("/parse/document")
+@app.get("/parse/document/{docs:path}")
 def parse_documents(docs: str):
     docs_processed_data = preprocess_text([docs])
     write_docs_and_update_embed(document_store, docs_processed_data, st_retriever)
 
 
-@app.get("/parse/youtube")
+@app.get("/parse/youtube/{url:path}")
 def parse_youtube(url: str):
     yt_processed_data = preprocess_add_videos([url])
     write_docs_and_update_embed(document_store, yt_processed_data, st_retriever)
