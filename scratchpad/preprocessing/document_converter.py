@@ -20,7 +20,7 @@ from haystack.nodes import (
     MarkdownConverter,
 )
 
-from preprocessing.utils import list_all_files_folder, StrConverter
+from scratchpad.preprocessing.utils import list_all_files_folder, StrConverter
 
 
 logger = logging.getLogger(__name__)

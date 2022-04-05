@@ -22,7 +22,7 @@ document_store = ElasticsearchDocumentStore(
 )
 st_retriever = get_nn_retriever(document_store, RETRIEVER)
 
-readwise_proc_docs = preprocess_readwise([os.path.join(DATA_LOC, READWISE_FILE_NAME)])
+readwise_proc_docs = preprocess_readwise(os.path.join(DATA_LOC, READWISE_FILE_NAME))
 logger.debug("Length of documents being inserted: {}".format(len(readwise_proc_docs)))
 write_docs_and_update_embed(document_store, readwise_proc_docs, st_retriever)
 

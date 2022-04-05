@@ -39,7 +39,7 @@ from pydub import AudioSegment
 from google.cloud import speech
 from google.cloud import storage
 
-from preprocessing.utils import upload_blob, download_blob
+from scratchpad.preprocessing.utils import upload_blob, download_blob
 
 
 logger = logging.getLogger(__name__)
