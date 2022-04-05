@@ -23,8 +23,8 @@ def scrape_website_to_dict(urls: Sequence[str]):
         hash_string = hash_object.hexdigest()
         with open(jsonf, "r") as f:
             jsonf_data = json.load(f)
-        jsonf_data['meta']['file_name'] = url
-        jsonf_data['meta']['src_ptr'] = hash_string
+        jsonf_data["meta"]["file_name"] = url
+        jsonf_data["meta"]["src_ptr"] = hash_string
         url_docs.append(jsonf_data)
 
     return url_docs
