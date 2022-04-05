@@ -27,7 +27,7 @@ def preprocess_readwise(file: str, processor_args: dict = {}):
         clean_whitespace=processor_args.get("clean_whitespace", True),
         clean_header_footer=processor_args.get("clean_header_footer", True),
         split_by=processor_args.get("split_by", "word"),
-        split_length=processor_args.get("split_lenght", 200),
+        split_length=processor_args.get("split_length", 200),
         split_respect_sentence_boundary=processor_args.get(
             "split_respect_sentence_boundary", True
         ),
@@ -50,7 +50,7 @@ def preprocess_text(file_list: Sequence[str], processor_args: dict = {}):
         clean_whitespace=processor_args.get("clean_whitespace", True),
         clean_header_footer=processor_args.get("clean_header_footer", True),
         split_by=processor_args.get("split_by", "word"),
-        split_length=processor_args.get("split_lenght", 200),
+        split_length=processor_args.get("split_length", 200),
         split_respect_sentence_boundary=processor_args.get(
             "split_respect_sentence_boundary", True
         ),
@@ -74,7 +74,7 @@ def preprocess_add_videos(url_list: Sequence[str], processor_args: dict = {}):
         clean_whitespace=processor_args.get("clean_whitespace", True),
         clean_header_footer=processor_args.get("clean_header_footer", True),
         split_by=processor_args.get("split_by", "word"),
-        split_length=processor_args.get("split_lenght", 200),
+        split_length=processor_args.get("split_length", 200),
         split_respect_sentence_boundary=processor_args.get(
             "split_respect_sentence_boundary", True
         ),
@@ -95,7 +95,7 @@ def preprocess_add_websites(url_list: Sequence[str], processor_args: dict = {}):
         clean_whitespace=processor_args.get("clean_whitespace", True),
         clean_header_footer=processor_args.get("clean_header_footer", True),
         split_by=processor_args.get("split_by", "word"),
-        split_length=processor_args.get("split_lenght", 200),
+        split_length=processor_args.get("split_length", 200),
         split_respect_sentence_boundary=processor_args.get(
             "split_respect_sentence_boundary", True
         ),
