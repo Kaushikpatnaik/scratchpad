@@ -1,5 +1,6 @@
 import pytest
 import docker
+import time
 
 from haystack.schema import Document
 from haystack.document_stores import ElasticsearchDocumentStore
@@ -15,11 +16,13 @@ def test_db():
     # docker run -d -p 9200:9200 -e "discovery.type=single-node" elasticsearch:7.9.2
     client = docker.from_env()
     container = client.containers.run(
-        "elasticsearch:7.9.2", detach=True, ports={"9201:9201"}, hostname="test-docker"
+        "elasticsearch:7.9.2", detach=True, ports={"9200":"9200"}, environment={"discovery.type": "single-node"} , hostname="test-docker"
     )
+    # allow docker some startup time
+    time.sleep(30)
     document_store = ElasticsearchDocumentStore(
         host="localhost",
-        port=9201,
+        port=9200,
         username="",
         password="",
         index="document",
@@ -28,11 +31,7 @@ def test_db():
     return container, document_store
 
 
-# @pytest.fixture(scope="session", autouse=True)
-# def cleanup(docker_container):
-#    docker_container.kill()
-
-
+@pytest.fixture
 def test_db_inputs():
     return [
         Document(
@@ -49,15 +48,21 @@ def test_db_inputs():
 def test_write_docs(test_db, test_db_inputs):
     _, db = test_db
     write_docs(db, test_db_inputs)
-    assert db.get_document_count == 2
-    assert db.get_embedding_count == 0
-    assert sorted(db.get_all_documents) == sorted(test_db_inputs)
+    assert db.get_document_count() == 2
+    assert db.get_embedding_count() == 0
+    assert sorted([x.content for x in db.get_all_documents()]) == sorted([x.content for x in test_db_inputs])
 
 
 def test_write_docs_and_update_embed(test_db, test_db_inputs):
     _, db = test_db
     st_retriever = get_nn_retriever(db, "sentence-transformers/all-mpnet-base-v2")
     write_docs_and_update_embed(db, test_db_inputs, st_retriever)
-    assert db.get_document_count == 2
-    assert db.get_embedding_count == 2
-    assert sorted(db.get_all_documents) == sorted(test_db_inputs)
+    assert db.get_document_count() == 2
+    assert db.get_embedding_count() == 2
+    assert sorted([x.content for x in db.get_all_documents()]) == sorted([x.content for x in test_db_inputs])
+
+
+@pytest.fixture(scope="session", autouse=True)
+def cleanup(test_db):
+    cnt, _ = test_db
+    cnt.kill()

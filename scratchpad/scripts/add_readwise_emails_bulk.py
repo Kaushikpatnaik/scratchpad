@@ -4,9 +4,9 @@ import logging
 
 from haystack.document_stores import ElasticsearchDocumentStore
 
-from preprocessing.pre_processing import preprocess_readwise, preprocess_text
-from database.write_and_update_store import write_docs_and_update_embed
-from retrievers import get_nn_retriever
+from scratchpad.preprocessing.pre_processing import preprocess_readwise, preprocess_text
+from scratchpad.database.write_and_update_store import write_docs_and_update_embed
+from scratchpad.retrievers import get_nn_retriever
 
 
 logger = logging.getLogger(__name__)
