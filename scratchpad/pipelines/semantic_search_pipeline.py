@@ -1,7 +1,7 @@
 from haystack import Pipeline
 
-from retrievers import get_es_retriever, get_nn_retriever
-from rankers import get_st_ranker
+from scratchpad.retrievers import get_es_retriever, get_nn_retriever
+from scratchpad.rankers import get_st_ranker
 
 
 DEFAULT_CONFIG = {
@@ -27,7 +27,7 @@ def dense_retriever_ranker_search_pipeline(document_store, config=DEFAULT_CONFIG
 
     p = Pipeline()
     p.add_node(component=st_retriever, name="STRetriever", inputs=["Query"])
-    p.add_node(component=st_ranker, name="Ranker", inputs=["ESRetriever"])
+    p.add_node(component=st_ranker, name="Ranker", inputs=["STRetriever"])
 
     return p
 

@@ -1,14 +1,58 @@
-# need to handle GPU installation
-# need to connect to elasticsearch server
+FROM nvidia/cuda:11.3.1-runtime-ubuntu20.04
 
-FROM python:3.8
+WORKDIR /home/user
 
-WORKDIR /code
+RUN apt-get update && apt-get install -y software-properties-common && \
+    add-apt-repository ppa:deadsnakes/ppa && \
+    apt-get install -y \
+        cmake \
+        curl \
+        git \
+        vim \
+        libpoppler-cpp-dev \
+        libtesseract-dev \
+        pkg-config \
+        poppler-utils \
+        python3-pip \
+        python3.8 \
+        python3.8-dev \
+        python3.8-distutils \
+        swig \
+        tesseract-ocr \
+        wget && \
+    rm -rf /var/lib/apt/lists/*
 
-COPY ./requirements.txt /code/requirements.txt
+# Install PDF converter
+RUN curl -s https://dl.xpdfreader.com/xpdf-tools-linux-4.03.tar.gz | tar -xvzf - -C /usr/local/bin --strip-components=2 xpdf-tools-linux-4.03/bin64/pdftotext
 
-RUN pip install --no-cache-dir --upgrade -r /code/requirements.txt
+# Install conda
+#RUN wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
+#RUN bash Miniconda3-latest-Linux-x86_64.sh -b -p /miniconda
+#ENV PATH=$PATH:/miniconda/condabin:/miniconda/bin
 
-COPY ./app /code/app
+# initialize conda environment
+#COPY ./conda_env.yml /home/user/conda_env.yml
+#RUN conda env create -f /home/user/conda_env.yml
+#ENV PATH /opt/conda/envs/scratchpad/bin:$PATH
+#ENV CONDA_DEFAULT_ENV scratchpad
+#RUN /bin/bash -c "conda init"
+#RUN /bin/bash -c "source activate scratchpad"
+#SHELL ["conda", "run", "-n", "scratchpad", "/bin/bash", "-c"]
 
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "80"]
+COPY ./scratchpad /home/user/scratchpad
+COPY ./requirements.txt /home/user/requirements.txt
+
+RUN pip install -r /home/user/requirements.txt
+
+# download haystack repository for install
+RUN git clone https://github.com/deepset-ai/haystack.git
+RUN pip install /home/user/haystack[all-gpu,ocr,crawler,preprocessing]
+RUN pip install torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cu113 --upgrade
+
+# folder for /file-upload
+RUN mkdir -p /home/user/app/file-upload
+RUN chmod 777 /home/user/app/file-upload
+
+EXPOSE 8000
+
+#CMD ["uvicorn", "scratchpad.app.main:app", "--host", "0.0.0.0", "--port", "8000"]

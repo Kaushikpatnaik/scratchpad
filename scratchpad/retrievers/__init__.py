@@ -1,4 +1,3 @@
-from pydoc import doc
 from haystack.nodes import ElasticsearchRetriever
 from haystack.nodes import EmbeddingRetriever
 

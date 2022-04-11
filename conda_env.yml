@@ -52,8 +52,6 @@ dependencies:
   - pyopenssl=22.0.0=pyhd3eb1b0_0
   - pysocks=1.7.1=py38h06a4308_0
   - python=3.8.0=h0371630_2
-  - pytorch=1.11.0=py3.8_cuda11.3_cudnn8.2.0_0
-  - pytorch-mutex=1.0=cuda
   - readline=7.0=h7b6447c_5
   - requests=2.27.1=pyhd3eb1b0_0
   - selenium=3.141.0=py38h27cfd23_1000
@@ -93,6 +91,7 @@ dependencies:
     - grpcio-status==1.45.0
     - h11==0.13.0
     - httptools==0.4.0
+    - iniconfig==1.1.1
     - ipdb==0.13.9
     - ipython==8.2.0
     - jedi==0.18.1
@@ -107,16 +106,19 @@ dependencies:
     - pickleshare==0.7.5
     - pillow==9.0.1
     - platformdirs==2.5.1
+    - pluggy==1.0.0
     - prompt-toolkit==3.0.28
     - proto-plus==1.20.3
     - protobuf==3.19.4
     - ptyprocess==0.7.0
     - pure-eval==0.2.2
+    - py==1.11.0
     - pyasn1==0.4.8
     - pyasn1-modules==0.2.8
     - pydub==0.25.1
     - pygments==2.11.2
     - pytesseract==0.3.7
+    - pytest==7.1.1
     - python-dateutil==2.8.2
     - python-dotenv==0.20.0
     - pyyaml==6.0
@@ -127,15 +129,13 @@ dependencies:
     - starlette==0.17.1
     - toml==0.10.2
     - tomli==2.0.1
-    - torch==1.11.0
-    - torchaudio==0.11.0
-    - torchvision==0.12.0
     - traitlets==5.1.1
     - urllib3==1.26.9
     - uvicorn==0.17.6
     - uvloop==0.16.0
     - watchgod==0.8.2
     - wcwidth==0.2.5
+    - webdriver-manager==3.5.4
     - websockets==10.2
     - youtube-dl==2021.12.17
 prefix: /home/dexter89_kp/miniconda3/envs/scratchpad

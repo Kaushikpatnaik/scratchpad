@@ -10,15 +10,15 @@ Server code. Support following endpoints
 from fastapi import FastAPI
 from haystack.document_stores import ElasticsearchDocumentStore
 
-from preprocessing.pre_processing import (
+from scratchpad.preprocessing.pre_processing import (
     preprocess_readwise,
     preprocess_text,
     preprocess_add_websites,
     preprocess_add_videos,
 )
-from database.write_and_update_store import write_docs_and_update_embed
-from retrievers import get_nn_retriever
-from pipelines.semantic_search_pipeline import (
+from scratchpad.database.write_and_update_store import write_docs_and_update_embed
+from scratchpad.retrievers import get_nn_retriever
+from scratchpad.pipelines.semantic_search_pipeline import (
     bm25_ranker_search_pipeline,
     dense_retriever_ranker_search_pipeline,
     pipeline_search,
@@ -32,7 +32,7 @@ DEFAULT_CONFIG = {
 
 
 document_store = ElasticsearchDocumentStore(
-    host="localhost", username="", password="", index="document", similarity="cosine"
+    host="elasticsearch", username="", password="", index="document", similarity="cosine"
 )
 st_retriever = get_nn_retriever(document_store, DEFAULT_CONFIG.get("ST_RETRIEVER"))
 bm25_ranker = bm25_ranker_search_pipeline(document_store, config=DEFAULT_CONFIG)

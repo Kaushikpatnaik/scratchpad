@@ -3,7 +3,7 @@ docker stop $(docker ps -a -q)
 source /home/dexter89_kp/miniconda3/bin/activate;
 export PYTHONPATH=$PYTHONPATH:/home/dexter89_kp/Desktop/scratchpad/scratchpad;
 
-docker run -d -p 9201:9201 -e "discovery.type=single-node" --name "test_txt" elasticsearch:7.9.2
+docker run -d -p 9200:9200 -e "discovery.type=single-node" --name "test_txt" elasticsearch:7.9.2
 
 cd ../scratchpad/
 
