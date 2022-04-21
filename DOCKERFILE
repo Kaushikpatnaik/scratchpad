@@ -21,6 +21,9 @@ RUN apt-get update && apt-get install -y software-properties-common && \
         tesseract-ocr \
         wget && \
     rm -rf /var/lib/apt/lists/*
+RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \ 
+    && echo "deb http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list
+RUN apt-get update && apt-get -y install google-chrome-stable
 
 # Install PDF converter
 RUN curl -s https://dl.xpdfreader.com/xpdf-tools-linux-4.03.tar.gz | tar -xvzf - -C /usr/local/bin --strip-components=2 xpdf-tools-linux-4.03/bin64/pdftotext
@@ -42,12 +45,14 @@ RUN curl -s https://dl.xpdfreader.com/xpdf-tools-linux-4.03.tar.gz | tar -xvzf -
 COPY ./scratchpad /home/user/scratchpad
 COPY ./requirements.txt /home/user/requirements.txt
 
-RUN pip install -r /home/user/requirements.txt
+#RUN pip install -r /home/user/requirements.txt
 
 # download haystack repository for install
 RUN git clone https://github.com/deepset-ai/haystack.git
 RUN pip install /home/user/haystack[all-gpu,ocr,crawler,preprocessing]
 RUN pip install torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cu113 --upgrade
+
+RUN pip install uvicorn fastapi google-cloud-storage google-cloud-speech youtube_dl pydub grpcio grpcio-status
 
 # folder for /file-upload
 RUN mkdir -p /home/user/app/file-upload

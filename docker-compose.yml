@@ -4,7 +4,7 @@ services:
     build:
       context: .
       dockerfile: DOCKERFILE
-    image: "scratchpad:0.4"
+    image: "scratchpad:0.6"
     # in recent docker-compose version you can enable GPU resources. Make sure to fulfill the prerequisites listed here: https://docs.docker.com/compose/gpu-support/
     deploy:
       resources:
@@ -35,3 +35,5 @@ services:
     restart: on-failure
     environment:
       - discovery.type=single-node
+    volumes:
+      - ./esdata:/var/lib/elasticsearch/data:rw

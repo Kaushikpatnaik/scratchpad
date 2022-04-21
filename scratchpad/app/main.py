@@ -7,7 +7,10 @@ Server code. Support following endpoints
 5. Click through data from users
 """
 
-from fastapi import FastAPI
+import shutil
+from pathlib import Path
+
+from fastapi import FastAPI, UploadFile, File
 from haystack.document_stores import ElasticsearchDocumentStore
 
 from scratchpad.preprocessing.pre_processing import (
@@ -29,6 +32,7 @@ DEFAULT_CONFIG = {
     "RANKER": "cross-encoder/ms-marco-MiniLM-L-6-v2",
     "ST_RETRIEVER": "sentence-transformers/all-mpnet-base-v2",
 }
+FILE_UPLOAD_PATH = '/home/user/app/file-upload'
 
 
 document_store = ElasticsearchDocumentStore(
@@ -44,15 +48,18 @@ dense_ranker = dense_retriever_ranker_search_pipeline(
 app = FastAPI()
 
 
-@app.get("/parse/url/{url:path}")
+@app.post("/parse/url/{url:path}")
 def parse_website(url: str):
     url_processed_data = preprocess_add_websites([url])
     write_docs_and_update_embed(document_store, url_processed_data, st_retriever)
 
 
-@app.get("/parse/document/{docs:path}")
-def parse_documents(docs: str):
-    docs_processed_data = preprocess_text([docs])
+@app.post("/parse/document/{docs:path}")
+def parse_documents(docs: UploadFile = File(...)):
+    file_path = Path(FILE_UPLOAD_PATH) / f"file.filename"
+    with file_path.open("wb") as buffer:
+        shutil.copyfileobj(docs.file, buffer)
+    docs_processed_data = preprocess_text([file_path])
     write_docs_and_update_embed(document_store, docs_processed_data, st_retriever)
 
 
@@ -64,8 +71,8 @@ def parse_youtube(url: str):
 
 @app.get("/search")
 def search(query: str):
-    bm25_results = pipeline_search(query, bm25_ranker)
-    dense_results = pipeline_search(query, dense_ranker)
+    bm25_results = pipeline_search(query, bm25_ranker, None)
+    dense_results = pipeline_search(query, dense_ranker, None)
     return bm25_results + dense_results
 
 
