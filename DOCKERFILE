@@ -42,7 +42,6 @@ RUN curl -s https://dl.xpdfreader.com/xpdf-tools-linux-4.03.tar.gz | tar -xvzf -
 #RUN /bin/bash -c "source activate scratchpad"
 #SHELL ["conda", "run", "-n", "scratchpad", "/bin/bash", "-c"]
 
-COPY ./scratchpad /home/user/scratchpad
 COPY ./requirements.txt /home/user/requirements.txt
 
 #RUN pip install -r /home/user/requirements.txt
@@ -52,12 +51,18 @@ RUN git clone https://github.com/deepset-ai/haystack.git
 RUN pip install /home/user/haystack[all-gpu,ocr,crawler,preprocessing]
 RUN pip install torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cu113 --upgrade
 
-RUN pip install uvicorn fastapi google-cloud-storage google-cloud-speech youtube_dl pydub grpcio grpcio-status
+RUN pip install uvicorn fastapi google-cloud-storage google-cloud-speech youtube_dl pydub grpcio grpcio-status python-multipart
 
 # folder for /file-upload
 RUN mkdir -p /home/user/app/file-upload
 RUN chmod 777 /home/user/app/file-upload
 
 EXPOSE 8000
+
+RUN git lfs install
+RUN git clone https://huggingface.co/cross-encoder/ms-marco-MiniLM-L-6-v2
+RUN git clone https://huggingface.co/sentence-transformers/all-mpnet-base-v2
+
+COPY ./scratchpad /home/user/scratchpad
 
 #CMD ["uvicorn", "scratchpad.app.main:app", "--host", "0.0.0.0", "--port", "8000"]

@@ -7,8 +7,10 @@ Server code. Support following endpoints
 5. Click through data from users
 """
 
+import uvicorn
 import shutil
 from pathlib import Path
+from os.path import exists
 
 from fastapi import FastAPI, UploadFile, File
 from haystack.document_stores import ElasticsearchDocumentStore
@@ -25,6 +27,7 @@ from scratchpad.pipelines.semantic_search_pipeline import (
     bm25_ranker_search_pipeline,
     dense_retriever_ranker_search_pipeline,
     pipeline_search,
+    combined_search_pipeline
 )
 
 
@@ -33,6 +36,11 @@ DEFAULT_CONFIG = {
     "ST_RETRIEVER": "sentence-transformers/all-mpnet-base-v2",
 }
 FILE_UPLOAD_PATH = '/home/user/app/file-upload'
+DEFAULT_PARAMS = {
+    "ESRetriever": {"top_k": 100},
+    "STRetriever": {"top_k": 100},
+    "Ranker": {"top_k": 20}
+}
 
 
 document_store = ElasticsearchDocumentStore(
@@ -40,26 +48,25 @@ document_store = ElasticsearchDocumentStore(
 )
 st_retriever = get_nn_retriever(document_store, DEFAULT_CONFIG.get("ST_RETRIEVER"))
 bm25_ranker = bm25_ranker_search_pipeline(document_store, config=DEFAULT_CONFIG)
-dense_ranker = dense_retriever_ranker_search_pipeline(
-    document_store, config=DEFAULT_CONFIG
-)
+dense_ranker = dense_retriever_ranker_search_pipeline(document_store, config=DEFAULT_CONFIG)
+comb_ranker = combined_search_pipeline(document_store, config=DEFAULT_CONFIG)
 
 
 app = FastAPI()
 
 
-@app.post("/parse/url/{url:path}")
+@app.get("/parse/url/{url:path}")
 def parse_website(url: str):
     url_processed_data = preprocess_add_websites([url])
     write_docs_and_update_embed(document_store, url_processed_data, st_retriever)
 
 
-@app.post("/parse/document/{docs:path}")
+@app.post("/parse/document")
 def parse_documents(docs: UploadFile = File(...)):
-    file_path = Path(FILE_UPLOAD_PATH) / f"file.filename"
+    file_path = Path(FILE_UPLOAD_PATH) / f"{docs.filename}"
     with file_path.open("wb") as buffer:
         shutil.copyfileobj(docs.file, buffer)
-    docs_processed_data = preprocess_text([file_path])
+    docs_processed_data = preprocess_text([str(file_path)])
     write_docs_and_update_embed(document_store, docs_processed_data, st_retriever)
 
 
@@ -69,13 +76,28 @@ def parse_youtube(url: str):
     write_docs_and_update_embed(document_store, yt_processed_data, st_retriever)
 
 
-@app.get("/search")
-def search(query: str):
-    bm25_results = pipeline_search(query, bm25_ranker, None)
-    dense_results = pipeline_search(query, dense_ranker, None)
-    return bm25_results + dense_results
+@app.get("/comb_search")
+def combined_search(query: str):
+    comb_results = pipeline_search(query, comb_ranker, params=DEFAULT_PARAMS)
+    return comb_results
+
+
+@app.get("/bm25_search")
+def bm25_search(query: str):
+    bm25_results = pipeline_search(query, bm25_ranker, params=DEFAULT_PARAMS)
+    return bm25_results
+
+
+@app.get("/nn_search")
+def nn_search(query: str):
+    dense_results = pipeline_search(query, dense_ranker, params=DEFAULT_PARAMS)
+    return dense_results
 
 
 @app.get("/user_click_search")
 def click_search_result(result: str):
     raise NotImplementedError
+
+
+if __name__ == "__main__":
+    uvicorn.run(app, host="0.0.0.0", port=8000)
