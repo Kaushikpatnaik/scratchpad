@@ -37,9 +37,9 @@ DEFAULT_CONFIG = {
 }
 FILE_UPLOAD_PATH = '/home/user/app/file-upload'
 DEFAULT_PARAMS = {
-    "ESRetriever": {"top_k": 100},
-    "STRetriever": {"top_k": 100},
-    "Ranker": {"top_k": 20}
+    "ESRetriever": {"top_k": 3},
+    "STRetriever": {"top_k": 3},
+    "Ranker": {"top_k": 2}
 }
 
 
@@ -84,12 +84,16 @@ def combined_search(query: str):
 
 @app.get("/bm25_search")
 def bm25_search(query: str):
-    bm25_results = pipeline_search(query, bm25_ranker, params=DEFAULT_PARAMS)
+    mod_params = DEFAULT_PARAMS
+    del mod_params["STRetriever"]
+    bm25_results = pipeline_search(query, bm25_ranker, params=mod_params)
     return bm25_results
 
 
 @app.get("/nn_search")
 def nn_search(query: str):
+    mod_params = DEFAULT_PARAMS
+    del mod_params["ESRetriever"]
     dense_results = pipeline_search(query, dense_ranker, params=DEFAULT_PARAMS)
     return dense_results
 

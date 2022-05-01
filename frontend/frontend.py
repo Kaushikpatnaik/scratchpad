@@ -1,21 +1,27 @@
+from pandas import read_sql_query
 import streamlit as st
 import random
 import string
+import requests
+import os
 
-import frontend.utils as utils
+import utils
+
+
+API_ENDPOINT=os.environ.get('API_ENDPOINT', 'http://localhost:8000')
 
 
 def main():
     st.set_page_config(
         page_title="Scratchpad: Your personalized search engine",
-        page_icon="asset/images/svg-1@2x.png",
+        page_icon="frontend/asset/images/svg-1@2x.png",
         layout="wide",
         initial_sidebar_state="collapsed"
     )
 
-    utils.local_css("asset/css/style.css")
+    utils.local_css("frontend/asset/css/style.css")
     utils.remote_css('https://fonts.googleapis.com/icon?family=Material+Icons')
-    utils.set_bg_hack('./asset/images/background-svg@1x.png')
+    utils.set_bg_hack('frontend/asset/images/background-svg@1x.png')
 
     st.markdown(""" <style>
         #MainMenu {visibility: hidden;}
@@ -31,6 +37,22 @@ def main():
         url = st.text_input("Parse Website Text")
         url_added = st.button('Parse Website')
 
+        if file_added:
+            file_endpoint = API_ENDPOINT + "/parse/document"
+            response = requests.post(file_endpoint, files=[("files", file)]).json()
+            print(response)
+            st.write(str(file.name) + " Uploaded")
+        if link_added:
+            yt_endpoint = API_ENDPOINT + "/parse/youtube/"
+            response = requests.post(yt_endpoint, data={'url': link})
+            print(response)
+            st.write(str(link) + " Uploaded. Youtube videos take time to parse. Please wait for some time to search within youtube videos")
+        if url_added:
+            url_endpoint = API_ENDPOINT + "/parse/url/"
+            response = requests.post(url_endpoint, data={'url': url})
+            print(response)
+            st.write(str(url) + " Parsed website text")
+
     st.markdown(utils.C1_SEARCH_BOX_INFO, unsafe_allow_html=True)
     
     # need to do column hacking to place search box and buttom at center
@@ -41,6 +63,8 @@ def main():
 
     # if search is pressed need to add containers with search results
     if button_clicked:
+        search_endpoint = API_ENDPOINT + "/comb_search"
+        response = requests.get(search_endpoint, params={'query': selected})
         st.markdown(
             "<hr />",
             unsafe_allow_html=True
@@ -69,6 +93,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-        
-        

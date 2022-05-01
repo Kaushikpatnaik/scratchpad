@@ -1,3 +1,4 @@
+import logging
 from pathlib import Path
 
 from haystack import Pipeline
@@ -7,19 +8,26 @@ from scratchpad.retrievers import get_es_retriever, get_nn_retriever
 from scratchpad.rankers import get_st_ranker
 
 
+logger = logging.getLogger(__name__)
+
 DEFAULT_CONFIG = {
-    "RANKER": "/home/user/scratchpad/checkpoints/cross-encoder/ms-marco-MiniLM-L-6-v2",
-    "ST_RETRIEVER": "/home/user/scratchpad/checkpoints/sentence-transformers/all-mpnet-base-v2",
+    "RANKER": "cross-encoder/ms-marco-MiniLM-L-6-v2",
+    "ST_RETRIEVER": "sentence-transformers/all-mpnet-base-v2",
 }
 
 
 class JoinNode(RootNode):
     def run(self, output=None, inputs=None):
         if inputs:
-            output = ""
+            output = {}
+            output['documents'] = []
             for input_dict in inputs:
-                output += input_dict["output"]
-        return {"output": output}, "output_1"
+                output['documents'] += input_dict["documents"]
+                for k in input_dict.keys():
+                    if k != 'documents':
+                        output[k] = input_dict[k]
+            output['node_id'] = 'Joiner'
+        return output, "output"
 
 
 def bm25_ranker_search_pipeline(document_store, config=DEFAULT_CONFIG):
