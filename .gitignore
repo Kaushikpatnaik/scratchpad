@@ -1,3 +1,6 @@
+# transformer model folders
+scratchpad/app/checkpoints/*
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

@@ -8,8 +8,8 @@ from scratchpad.rankers import get_st_ranker
 
 
 DEFAULT_CONFIG = {
-    "RANKER": Path("../../checkpoints/cross-encoder/ms-marco-MiniLM-L-6-v2"),
-    "ST_RETRIEVER": Path("../../sentence-transformers/all-mpnet-base-v2"),
+    "RANKER": "/home/user/scratchpad/checkpoints/cross-encoder/ms-marco-MiniLM-L-6-v2",
+    "ST_RETRIEVER": "/home/user/scratchpad/checkpoints/sentence-transformers/all-mpnet-base-v2",
 }
 
 

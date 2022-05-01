@@ -11,6 +11,8 @@ python scripts/add_readwise_emails_bulk.py
 
 uvicorn main:app --host 0.0.0.0 --port 80
 
+curl -X POST -H 'Accept: application/json' -F files='@/Users/alexey/Downloads/Sansa Stark - Wikipedia.pdf' http://127.0.0.1:8000/file-upload
+
 curl -X POST "http://127.0.0.0:80/parse/document" -d '{"data": "/home/dexter89_kp/Desktop/scratchpad/data/emails/2050.docx"}'
 
 curl -X POST "http://127.0.0.0:80/parse/url" -d '{"data": "https://future.a16z.com/podcasts/ai-ml-economics-complexity-data-science-company-building/"}'
