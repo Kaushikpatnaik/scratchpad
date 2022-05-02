@@ -31,7 +31,7 @@ markdown_converter = MarkdownConverter(remove_numeric_tables=True)
 str_converter = StrConverter()
 
 
-def _generate_docs(ext_filepaths, converter):
+def _generate_docs(ext_filepaths, converter, type):
     if len(ext_filepaths) == 0:
         return []
     docs = []
@@ -40,7 +40,7 @@ def _generate_docs(ext_filepaths, converter):
         hash_object = hashlib.md5(str(filename).encode("utf-8"))
         hash_string = hash_object.hexdigest()
         doc = converter.convert(
-            file_path=filepath, meta={"src_ptr": hash_string, "file_name": filename}
+            file_path=filepath, meta={"src_ptr": hash_string, "file_name": filename, "src_type": type}
         )[0]
         docs.append(doc)
 
@@ -49,22 +49,22 @@ def _generate_docs(ext_filepaths, converter):
 
 def generate_docx_docs(file_paths):
     docs_filepaths = [x for x in file_paths if x.endswith(".docx")]
-    return _generate_docs(docs_filepaths, docx_converter)
+    return _generate_docs(docs_filepaths, docx_converter, "docx")
 
 
 def generate_pdf_docs(file_paths):
     pdf_filepaths = [x for x in file_paths if x.endswith(".pdf")]
-    return _generate_docs(pdf_filepaths, pdf_converter)
+    return _generate_docs(pdf_filepaths, pdf_converter, "pdf")
 
 
 def generate_txt_docs(file_paths):
     txt_filepaths = [x for x in file_paths if x.endswith(".txt")]
-    return _generate_docs(txt_filepaths, text_converter)
+    return _generate_docs(txt_filepaths, text_converter, "txt")
 
 
 def generate_md_docs(file_paths):
     md_filepaths = [x for x in file_paths if x.endswith(".md")]
-    return _generate_docs(md_filepaths, markdown_converter)
+    return _generate_docs(md_filepaths, markdown_converter, "txt")
 
 
 def generate_readwise_docs(readwise_file_path):

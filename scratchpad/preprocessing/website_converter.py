@@ -272,6 +272,7 @@ def scrape_website_to_dict(urls: Sequence[str]):
             jsonf_data = json.load(f)
         jsonf_data["meta"]["file_name"] = url
         jsonf_data["meta"]["src_ptr"] = hash_string
+        jsonf_data["meta"]["src_type"] = "url"
         url_docs.append(jsonf_data)
 
     return url_docs

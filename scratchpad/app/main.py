@@ -55,7 +55,7 @@ comb_ranker = combined_search_pipeline(document_store, config=DEFAULT_CONFIG)
 app = FastAPI()
 
 
-@app.get("/parse/url/{url:path}")
+@app.post("/parse/url/{url:path}")
 def parse_website(url: str):
     url_processed_data = preprocess_add_websites([url])
     write_docs_and_update_embed(document_store, url_processed_data, st_retriever)
@@ -70,7 +70,7 @@ def parse_documents(docs: UploadFile = File(...)):
     write_docs_and_update_embed(document_store, docs_processed_data, st_retriever)
 
 
-@app.get("/parse/youtube/{url:path}")
+@app.post("/parse/youtube/{url:path}")
 def parse_youtube(url: str):
     yt_processed_data = preprocess_add_videos([url])
     write_docs_and_update_embed(document_store, yt_processed_data, st_retriever)

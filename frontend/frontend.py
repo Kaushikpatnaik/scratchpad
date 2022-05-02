@@ -10,6 +10,27 @@ import utils
 
 API_ENDPOINT=os.environ.get('API_ENDPOINT', 'http://localhost:8000')
 
+def parse_search_results(request_json):
+    result_documents = request_json['documents']
+    num_results = len(result_documents)
+    results_dict = {}
+    for idx, result in enumerate(result_documents):
+        # result['meta']['src_type']
+        results_dict[idx] = {'title': result['meta']['file_name'], 'src_type': 'yt', 'content': result['content'], 'score': result['score']}
+
+    return results_dict, num_results
+
+
+def get_thumnail_images():
+    pdf_thumb = utils.image_to_base64(utils.load_image_from_local("frontend/asset/images/pdf-icon.png"))
+    docx_thumb = utils.image_to_base64(utils.load_image_from_local("frontend/asset/images/microsoft-word@2x.png"))
+    txt_thumb = utils.image_to_base64(utils.load_image_from_local("frontend/asset/images/csv-128-1@2x.png"))
+    url_thumb = utils.image_to_base64(utils.load_image_from_local("frontend/asset/images/website@2x.png"))
+    yt_thumb = utils.image_to_base64(utils.load_image_from_local("frontend/asset/images/youtube@2x.png"))
+
+    return {'pdf': pdf_thumb, 'docx': docx_thumb, 'txt': txt_thumb, 'url': url_thumb, 'yt': yt_thumb}
+
+
 
 def main():
     st.set_page_config(
@@ -32,25 +53,29 @@ def main():
         st.markdown(utils.C2_HEADER_INFO, unsafe_allow_html=True)
         file = st.file_uploader("Upload a pdf, csv or docx file")
         file_added = st.button('Upload File')
-        link = st.text_input("Add youtube video")
-        link_added = st.button('Upload Video')
-        url = st.text_input("Parse Website Text")
-        url_added = st.button('Parse Website')
 
         if file_added:
             file_endpoint = API_ENDPOINT + "/parse/document"
-            response = requests.post(file_endpoint, files=[("files", file)]).json()
-            print(response)
+            response = requests.post(file_endpoint, files={'docs': file})
             st.write(str(file.name) + " Uploaded")
+
+        link = st.text_input("Add youtube video")
+        link_added = st.button('Upload Video')
+
         if link_added:
             yt_endpoint = API_ENDPOINT + "/parse/youtube/"
             response = requests.post(yt_endpoint, data={'url': link})
             print(response)
             st.write(str(link) + " Uploaded. Youtube videos take time to parse. Please wait for some time to search within youtube videos")
+        
+        url = st.text_input("Parse Website Text")
+        url_added = st.button('Parse Website')
+        
         if url_added:
-            url_endpoint = API_ENDPOINT + "/parse/url/"
-            response = requests.post(url_endpoint, data={'url': url})
-            print(response)
+            url_endpoint = API_ENDPOINT + "/parse/url"
+            print(url)
+            response = requests.post(url_endpoint, data=url)
+            print(response, response.json())
             st.write(str(url) + " Parsed website text")
 
     st.markdown(utils.C1_SEARCH_BOX_INFO, unsafe_allow_html=True)
@@ -65,30 +90,34 @@ def main():
     if button_clicked:
         search_endpoint = API_ENDPOINT + "/comb_search"
         response = requests.get(search_endpoint, params={'query': selected})
-        st.markdown(
-            "<hr />",
-            unsafe_allow_html=True
-        )
-        utils.unset_bg_hack()
-        with st.container():
-            st.header("Search results from Scratchpad")
+        response_json = response.json()
+        if response.status_code == 200:
+            st.markdown(
+                "<hr />",
+                unsafe_allow_html=True
+            )
+            utils.unset_bg_hack()
+            with st.container():
+                st.header("Search results from Scratchpad")
 
-            letters = string.ascii_lowercase
-            image_temp = utils.image_to_base64(utils.load_image_from_local("./asset/images/svg-1@2x.png"))
+                results_dict, num_results = parse_search_results(response_json)
+                thumbnail_images = get_thumnail_images()
 
-            for i in range(20):
-                title = ''.join(random.choice(letters) for i in range(10))
-                str_i = str(i)
-                st.markdown(
-                    " ".join([
-                        "<div class='results-{str_i} text-wrapper'>",
-                        f"<img src='{image_temp}' align='left' class='img-wrapper'>",
-                        "<p class='font-body'><b>Result Text with hyperlink</b></p>",
-                        "<p class='font-body'>Details of text</p>",
-                        "</div>",
-                    ]),
-                    unsafe_allow_html=True
-                    )
+                for i in range(num_results):
+                    title = results_dict[i]['title']
+                    str_i = str(i)
+                    content = results_dict[i]['content']
+                    thumbnail_image = thumbnail_images[results_dict[i]['src_type']]
+                    st.markdown(
+                        " ".join([
+                            "<div class='results-{str_i} text-wrapper'>",
+                            f"<img src='{thumbnail_image}' align='left' class='img-wrapper'>",
+                            f"<p class='font-body'><b>'{title}'</b></p>",
+                            f"<p class='font-body'>'{content}'</p>",
+                            "</div>",
+                        ]),
+                        unsafe_allow_html=True
+                        )
 
 
 if __name__ == "__main__":
