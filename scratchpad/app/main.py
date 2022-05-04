@@ -9,11 +9,13 @@ Server code. Support following endpoints
 
 import uvicorn
 import shutil
+import logging
 from pathlib import Path
 from os.path import exists
 
 from fastapi import FastAPI, UploadFile, File
 from haystack.document_stores import ElasticsearchDocumentStore
+from pydantic import BaseModel
 
 from scratchpad.preprocessing.pre_processing import (
     preprocess_readwise,
@@ -37,11 +39,13 @@ DEFAULT_CONFIG = {
 }
 FILE_UPLOAD_PATH = '/home/user/app/file-upload'
 DEFAULT_PARAMS = {
-    "ESRetriever": {"top_k": 3},
-    "STRetriever": {"top_k": 3},
-    "Ranker": {"top_k": 2}
+    "ESRetriever": {"top_k": 20},
+    "STRetriever": {"top_k": 20},
+    "Ranker": {"top_k": 20}
 }
 
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 document_store = ElasticsearchDocumentStore(
     host="elasticsearch", username="", password="", index="document", similarity="cosine"
@@ -55,9 +59,14 @@ comb_ranker = combined_search_pipeline(document_store, config=DEFAULT_CONFIG)
 app = FastAPI()
 
 
-@app.post("/parse/url/{url:path}")
-def parse_website(url: str):
-    url_processed_data = preprocess_add_websites([url])
+class UrlModel(BaseModel):
+    url: str
+
+
+@app.post("/parse/url")
+def parse_website(data: UrlModel):
+    logger.info(f"Inside parse website function in main {data}")
+    url_processed_data = preprocess_add_websites([data.url])
     write_docs_and_update_embed(document_store, url_processed_data, st_retriever)
 
 
@@ -70,9 +79,9 @@ def parse_documents(docs: UploadFile = File(...)):
     write_docs_and_update_embed(document_store, docs_processed_data, st_retriever)
 
 
-@app.post("/parse/youtube/{url:path}")
-def parse_youtube(url: str):
-    yt_processed_data = preprocess_add_videos([url])
+@app.post("/parse/youtube")
+def parse_youtube(data: UrlModel):
+    yt_processed_data = preprocess_add_videos([data.url])
     write_docs_and_update_embed(document_store, yt_processed_data, st_retriever)
 
 

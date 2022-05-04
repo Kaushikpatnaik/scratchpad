@@ -14,7 +14,7 @@ from haystack.nodes.base import BaseComponent
 from haystack.schema import Document
 
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger('__name__')
 
 
 class Crawler(BaseComponent):
@@ -258,6 +258,7 @@ class Crawler(BaseComponent):
 
 
 def scrape_website_to_dict(urls: Sequence[str]):
+    logger.info(f"Inside scrape website to dict function in website_converter {urls}")
     crawler = Crawler(output_dir=tempfile.gettempdir())
 
     # fetch only the url, do not traverse its sources
