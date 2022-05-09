@@ -21,6 +21,7 @@ import io
 import json
 from os import path
 import math
+import datetime
 from urllib import request
 from urllib.parse import urlparse
 from collections import namedtuple
@@ -39,6 +40,8 @@ from pydub import AudioSegment
 from google.cloud import speech
 from google.cloud import storage
 
+from haystack.schema import Document
+
 from scratchpad.preprocessing.utils import upload_blob, download_blob
 
 
@@ -50,7 +53,7 @@ TRANSCRIPTION_RESULTS = namedtuple(
 AUDIO_METADATA = namedtuple(
     "audio_metadata", ["channels", "sample_width", "frame_rate"]
 )
-GS_BUCKET = "seamless-dev"
+GS_BUCKET = "scratchpad-dev-temp"
 
 
 class WebDriverMultiMediaExtractor(object):
@@ -148,12 +151,13 @@ class YoutubeDLMultiMediaExtractor(object):
         self.ydl.download(url)
 
     def extract(self, url):
-        info = self.extract_metadata(url)
+        info = self.extract_url_metadata(url)
         self.extract_multimedia([url])
         downloaded_location = "/tmp/seamless_downloads/{0}-{1}.flac".format(
             info["id"], info["extractor"]
         )
         audio_metadata = self.extract_audio_metadata(downloaded_location)
+        print(audio_metadata)
         gs_location = upload_blob(GS_BUCKET, downloaded_location)
         return info, gs_location, audio_metadata
 
@@ -164,14 +168,14 @@ class SpeechToTextWrapper(object):
 
     def transcribe_file(self, speech_file, audio_metadata):
 
-        uri = path.join("gs:/", GS_BUCKET, speech_file)
+        uri = path.join("gs://", GS_BUCKET, speech_file)
         audio = speech.RecognitionAudio(uri=uri)
 
         config = speech.RecognitionConfig(
             encoding=speech.RecognitionConfig.AudioEncoding.FLAC,
             language_code="en-US",
             enable_word_time_offsets=True,
-            audio_channels=audio_metadata.audio_channels,
+            audio_channel_count=audio_metadata.channels,
         )
 
         operation = self.client.long_running_recognize(config=config, audio=audio)
@@ -183,7 +187,7 @@ class SpeechToTextWrapper(object):
             print("Transcript: {}".format(alternative.transcript))
             print("Confidence: {}".format(alternative.confidence))
 
-            min_start, max_end = math.inf, 0
+            min_start, max_end = datetime.timedelta(24*60*60*60), datetime.timedelta(0)
             for word_info in alternative.words:
                 start_time = word_info.start_time
                 end_time = word_info.end_time
@@ -205,7 +209,6 @@ class SpeechToTextWrapper(object):
 def generate_youtube_transcript_docs(url: str, downloader_config: dict = None):
     youtube_downloader = YoutubeDLMultiMediaExtractor(config=downloader_config)
     speech_to_text = SpeechToTextWrapper()
-    str_converter = ReadwiseConverter()
 
     hash_object = hashlib.md5(str(url).encode("utf-8"))
     hash_string = hash_object.hexdigest()
@@ -219,16 +222,16 @@ def generate_youtube_transcript_docs(url: str, downloader_config: dict = None):
     # massage data to proper format
     youtube_docs = []
     for url_text in url_texts:
-        url_dict = str_converter.convert(
-            url.transcription,
-            meta={
-                "src_path": hash_string,
-                "title": url_audio_info.title,
-                "author": url_audio_info.author,
-                "start_time": url_text.start_time,
-                "end_time": url_text.end_time,
-                "confidence": url_text.confidence,
-            },
-        )
-        youtube_docs.append(url_dict)
+        meta = {
+            "url": url,
+            "src_ptr": hash_string,
+            "src_type": "yt",
+            "title": url_audio_info.title,
+            "author": url_audio_info.author,
+            "start_time": url_text.start_time,
+            "end_time": url_text.end_time,
+            "confidence": url_text.confidence,
+        }
+        yt_doc = Document(content=url.transcription, meta=meta, id_hash_keys=None)
+        youtube_docs.append(yt_doc)
     return youtube_docs

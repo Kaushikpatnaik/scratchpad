@@ -23,7 +23,7 @@ RUN apt-get update && apt-get install -y software-properties-common && \
     rm -rf /var/lib/apt/lists/*
 
 # Install PDF converter
-RUN curl -s https://dl.xpdfreader.com/xpdf-tools-linux-4.03.tar.gz | tar -xvzf - -C /usr/local/bin --strip-components=2 xpdf-tools-linux-4.03/bin64/pdftotext
+RUN curl -s https://dl.xpdfreader.com/xpdf-tools-linux-4.04.tar.gz | tar -xvzf - -C /usr/local/bin --strip-components=2 xpdf-tools-linux-4.04/bin64/pdftotext
 
 RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \ 
     && echo "deb http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list
