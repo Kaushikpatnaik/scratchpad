@@ -83,7 +83,7 @@ def preprocess_add_videos(url_list: Sequence[str], processor_args: dict = {}):
 
     youtube_docs = []
     for url in url_list:
-        youtube_docs.append(generate_youtube_transcript_docs(url=url))
+        youtube_docs += generate_youtube_transcript_docs(url=url)
 
     return processor.process(youtube_docs)
 

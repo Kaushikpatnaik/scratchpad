@@ -222,16 +222,17 @@ def generate_youtube_transcript_docs(url: str, downloader_config: dict = None):
     # massage data to proper format
     youtube_docs = []
     for url_text in url_texts:
+        print(url_text)
         meta = {
             "url": url,
             "src_ptr": hash_string,
             "src_type": "yt",
-            "title": url_audio_info.title,
-            "author": url_audio_info.author,
-            "start_time": url_text.start_time,
-            "end_time": url_text.end_time,
-            "confidence": url_text.confidence,
+            "title": url_audio_info.get('title', url),
+            "author": url_audio_info.get('author', ''),
+            "start_time": str(url_text.get('start_time')),
+            "end_time": str(url_text.get('end_time')),
+            "confidence": url_text.get('confidence'),
         }
-        yt_doc = Document(content=url.transcription, meta=meta, id_hash_keys=None)
+        yt_doc = Document(content=url_text.get('transcription'), meta=meta, id_hash_keys=None)
         youtube_docs.append(yt_doc)
     return youtube_docs
