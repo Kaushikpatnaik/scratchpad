@@ -23,14 +23,14 @@ def parse_search_results(request_json):
 
 
 def get_thumnail_images():
-    pdf_thumb = utils.image_to_base64(utils.load_image_from_local("frontend/asset/images/pdf-icon.png"))
-    docx_thumb = utils.image_to_base64(utils.load_image_from_local("frontend/asset/images/microsoft-word@2x.png"))
-    txt_thumb = utils.image_to_base64(utils.load_image_from_local("frontend/asset/images/csv-128-1@2x.png"))
-    url_thumb = utils.image_to_base64(utils.load_image_from_local("frontend/asset/images/website@2x.png"))
-    yt_thumb = utils.image_to_base64(utils.load_image_from_local("frontend/asset/images/youtube@2x.png"))
-    twt_thumb = utils.image_to_base64(utils.load_image_from_local("frontend/asset/images/twitter_logo_512x512.png"))
+    pdf_thumb = utils.image_to_base64(utils.load_image_from_local("frontend/asset/images/pdf-icon_100.png"))
+    docx_thumb = utils.image_to_base64(utils.load_image_from_local("frontend/asset/images/word_100.png"))
+    txt_thumb = utils.image_to_base64(utils.load_image_from_local("frontend/asset/images/csv_100.png"))
+    url_thumb = utils.image_to_base64(utils.load_image_from_local("frontend/asset/images/website@2x_100.png"))
+    yt_thumb = utils.image_to_base64(utils.load_image_from_local("frontend/asset/images/youtube_100.png"))
+    twt_thumb = utils.image_to_base64(utils.load_image_from_local("frontend/asset/images/twitter_logo_100x100.png"))
 
-    return {'pdf': pdf_thumb, 'docx': docx_thumb, 'txt': txt_thumb, 'url': url_thumb, 'yt': yt_thumb}
+    return {'pdf': pdf_thumb, 'docx': docx_thumb, 'txt': txt_thumb, 'url': url_thumb, 'yt': yt_thumb, 'twt': twt_thumb}
 
 
 

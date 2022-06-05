@@ -255,6 +255,7 @@ def generate_youtube_transcript_docs(url: str, downloader_config: dict = None):
             "url": url,
             "src_type": "yt",
             "title": url_audio_info.get('title', url),
+            "file_name": url_audio_info.get('title', url),
             "author": url_audio_info.get('author', '')
         }
 
