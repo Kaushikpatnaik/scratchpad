@@ -27,6 +27,7 @@ from urllib.parse import urlparse
 from collections import namedtuple
 import logging
 import hashlib
+import copy
 
 from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
@@ -34,6 +35,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 
 import youtube_dl
+import webvtt
 
 from pydub import AudioSegment
 
@@ -126,15 +128,15 @@ class YoutubeDLMultiMediaExtractor(object):
             self.config = config
         else:
             self.config = {
-                "outtmpl": "/tmp/seamless_downloads/%(id)s-%(extractor)s.%(ext)s",
-                "format": "bestaudio/best",
-                "postprocessors": [
-                    {"key": "FFmpegExtractAudio", "preferredcodec": "flac"}
-                ],
-            }
+            "outtmpl": "/tmp/seamless_downloads/%(id)s-%(extractor)s.%(ext)s",
+            "subtitleslangs": ["en"],
+            "writeautomaticsub": True,
+            "subtitlesformat": "srt",
+            "skip_download": True,
+            "verbose": 3
+        }
 
         self.ydl = youtube_dl.YoutubeDL(self.config)
-        self.storage_client = storage.Client()
 
     def extract_url_metadata(self, url):
         return self.ydl.extract_info(url, download=False)
@@ -153,13 +155,10 @@ class YoutubeDLMultiMediaExtractor(object):
     def extract(self, url):
         info = self.extract_url_metadata(url)
         self.extract_multimedia([url])
-        downloaded_location = "/tmp/seamless_downloads/{0}-{1}.flac".format(
+        downloaded_location = "/tmp/seamless_downloads/{0}-{1}.en.vtt".format(
             info["id"], info["extractor"]
         )
-        audio_metadata = self.extract_audio_metadata(downloaded_location)
-        print(audio_metadata)
-        gs_location = upload_blob(GS_BUCKET, downloaded_location)
-        return info, gs_location, audio_metadata
+        return info, downloaded_location
 
 
 class SpeechToTextWrapper(object):
@@ -206,33 +205,58 @@ class SpeechToTextWrapper(object):
         return transcription
 
 
+def _cleanup_yt_subtitles(vtt_file, meta, batch_size=60):
+    # do a first pass of the data to get caption start and end times
+    # also get the complete text transcript
+
+    docs = []
+    start_times = []
+    end_times = []
+    subtitle_txt = None
+
+    for caption in webvtt.read(vtt_file):
+        start_times.append(caption.start)
+        end_times.append(caption.end)
+        if len(caption.text) > 10:
+            subtitle_txt = caption.text.split("  ")
+    
+    start_times = start_times[:len(subtitle_txt)]
+    end_times = end_times[:len(subtitle_txt)]
+
+    batches = int(len(subtitle_txt)/batch_size)
+
+    for it in range(batches):
+        text = subtitle_txt[it*60:(it+1)*60]
+        st_time = start_times[it*60:(it+1)*60]
+        end_time = end_times[it*60:(it+1)*60]
+
+        batch_strt = st_time[0]
+        batch_end = end_time[-1]
+        batch_text = ' '.join(text)
+
+        caption_meta = copy.deepcopy(meta)
+        caption_meta['start_time'] = batch_strt
+        caption_meta['end_time'] = batch_end
+        yt_doc = Document(content=batch_text, meta=caption_meta, id_hash_keys=None)
+        docs.append(yt_doc)
+
+    return docs
+
+
 def generate_youtube_transcript_docs(url: str, downloader_config: dict = None):
     youtube_downloader = YoutubeDLMultiMediaExtractor(config=downloader_config)
-    speech_to_text = SpeechToTextWrapper()
 
     hash_object = hashlib.md5(str(url).encode("utf-8"))
     hash_string = hash_object.hexdigest()
 
-    url_audio_info, url_gs_loc, url_audio_meta = youtube_downloader.extract(url)
+    url_audio_info, url_loc = youtube_downloader.extract(url)
 
-    url_texts = speech_to_text.transcribe_file(
-        speech_file=url_gs_loc, audio_metadata=url_audio_meta
-    )
-
-    # massage data to proper format
-    youtube_docs = []
-    for url_text in url_texts:
-        print(url_text)
-        meta = {
+    meta = {
             "url": url,
-            "src_ptr": hash_string,
             "src_type": "yt",
             "title": url_audio_info.get('title', url),
-            "author": url_audio_info.get('author', ''),
-            "start_time": str(url_text.get('start_time')),
-            "end_time": str(url_text.get('end_time')),
-            "confidence": url_text.get('confidence'),
+            "author": url_audio_info.get('author', '')
         }
-        yt_doc = Document(content=url_text.get('transcription'), meta=meta, id_hash_keys=None)
-        youtube_docs.append(yt_doc)
+
+    youtube_docs = _cleanup_yt_subtitles(url_loc, meta)
     return youtube_docs

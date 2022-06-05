@@ -22,12 +22,17 @@ RUN apt-get update && apt-get install -y software-properties-common && \
         wget && \
     rm -rf /var/lib/apt/lists/*
 
+#RUN wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/cuda-keyring_1.0-1_all.deb
+
 # Install PDF converter
 RUN curl -s https://dl.xpdfreader.com/xpdf-tools-linux-4.04.tar.gz | tar -xvzf - -C /usr/local/bin --strip-components=2 xpdf-tools-linux-4.04/bin64/pdftotext
 
 RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \ 
     && echo "deb http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list
 RUN apt-get update && apt-get -y install google-chrome-stable
+
+#RUN wget -q https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+#RUN apt-get update && apt-get install ./google-chrome-stable_current_amd64.deb
 
 # Install conda
 #RUN wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
@@ -52,7 +57,7 @@ RUN git clone https://github.com/deepset-ai/haystack.git
 RUN pip install /home/user/haystack[all-gpu,ocr,crawler,preprocessing]
 RUN pip install torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cu113 --upgrade
 
-RUN pip install uvicorn fastapi google-cloud-storage google-cloud-speech youtube_dl pydub grpcio grpcio-status python-multipart
+RUN pip install uvicorn fastapi google-cloud-storage google-cloud-speech youtube_dl pydub grpcio grpcio-status python-multipart webvtt-py tqdm
 
 # folder for /file-upload
 RUN mkdir -p /home/user/app/file-upload
@@ -60,7 +65,7 @@ RUN chmod 777 /home/user/app/file-upload
 
 EXPOSE 8000
 
-COPY ./scratchpad /home/user/scratchpad
+COPY ./ /home/user/scratchpad
 
 #RUN apt-get install -y git-lfs
 #RUN git lfs install --skip-repo

@@ -3,6 +3,7 @@ import tempfile
 import json
 import re
 import hashlib
+from tqdm import tqdm
 from urllib.parse import urlparse
 from typing import Sequence, Optional, List, Tuple, Union, Dict
 from pathlib import Path
@@ -148,12 +149,15 @@ class Crawler(BaseComponent):
         self, urls: List[str], output_dir: Path, base_url: str = None, id_hash_keys: Optional[List[str]] = None
     ) -> List[Path]:
         paths = []
-        for link in urls:
+        for i in tqdm(range(len(urls))):
+            link = urls[i]
+            print(link)
             logger.info(f"writing contents from `{link}`")
             try:
                 self.driver.get(link)
             except WebDriverException as e:
                 print(e)
+                continue
             el = self.driver.find_element_by_tag_name("body")
             text = el.text
 

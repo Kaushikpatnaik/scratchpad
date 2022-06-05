@@ -16,7 +16,8 @@ def parse_search_results(request_json):
     results_dict = {}
     for idx, result in enumerate(result_documents):
         # result['meta']['src_type']
-        results_dict[idx] = {'title': result['meta']['file_name'], 'src_type': 'yt', 'content': result['content'], 'score': result['score']}
+        results_dict[idx] = {'title': result['meta'].get('file_name', "No file name"), 'src_type': result['meta'].get(
+        'src_type', 'yt'), 'content': result['content'], 'score': result['score']}
 
     return results_dict, num_results
 
@@ -27,6 +28,7 @@ def get_thumnail_images():
     txt_thumb = utils.image_to_base64(utils.load_image_from_local("frontend/asset/images/csv-128-1@2x.png"))
     url_thumb = utils.image_to_base64(utils.load_image_from_local("frontend/asset/images/website@2x.png"))
     yt_thumb = utils.image_to_base64(utils.load_image_from_local("frontend/asset/images/youtube@2x.png"))
+    twt_thumb = utils.image_to_base64(utils.load_image_from_local("frontend/asset/images/twitter_logo_512x512.png"))
 
     return {'pdf': pdf_thumb, 'docx': docx_thumb, 'txt': txt_thumb, 'url': url_thumb, 'yt': yt_thumb}
 
@@ -103,17 +105,27 @@ def main():
                 results_dict, num_results = parse_search_results(response_json)
                 thumbnail_images = get_thumnail_images()
 
+                # dedup based on title
+                # going to hurt no title data
+                # since ranker outputs data based on score, selecting highest scoring will be better
+                uniq_titles = {}
                 for i in range(num_results):
+                    title_src = results_dict[i]['title'] + results_dict[i]['src_type']
+                    if title_src not in uniq_titles:
+                        uniq_titles[title_src] = i
+
+                for _, i in uniq_titles.items():
                     title = results_dict[i]['title']
                     str_i = str(i)
                     content = results_dict[i]['content']
                     thumbnail_image = thumbnail_images[results_dict[i]['src_type']]
+
                     st.markdown(
                         " ".join([
                             "<div class='results-{str_i} text-wrapper'>",
                             f"<img src='{thumbnail_image}' align='left' class='img-wrapper'>",
-                            f"<p class='font-body'><b>'{title}'</b></p>",
-                            f"<p class='font-body'>'{content}'</p>",
+                            f"<p class='font-body'><b>{title}</b></p>",
+                            f"<p class='font-body'>{content}</p>",
                             "</div>",
                         ]),
                         unsafe_allow_html=True

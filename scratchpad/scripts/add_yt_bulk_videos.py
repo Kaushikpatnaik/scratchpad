@@ -7,33 +7,24 @@ from haystack.schema import Document
 from haystack.document_stores import ElasticsearchDocumentStore
 from scratchpad.preprocessing.pre_processing import preprocess_add_videos
 from scratchpad.preprocessing.youtube_converter import YoutubeDLMultiMediaExtractor, SpeechToTextWrapper
+from scratchpad.retrievers import get_nn_retriever
+from scratchpad.database.write_and_update_store import write_docs_and_update_embed
 
-def test_db():
-    # docker run -d -p 9200:9200 -e "discovery.type=single-node" elasticsearch:7.9.2
-    #client = docker.from_env()
-    #container = client.containers.run(
-    #    "elasticsearch:7.9.2", detach=True, ports={"9200":"9200"}, environment={"discovery.type": "single-node"} , hostname="test-docker"
-    #)
-    container = None
-    # allow docker some startup time
-    #time.sleep(30)
+
+RETRIEVER = "sentence-transformers/all-mpnet-base-v2"
+
+def load_models():
     document_store = ElasticsearchDocumentStore(
-        host="localhost",
-        port=9200,
-        username="",
-        password="",
-        index="document",
-        similarity="cosine",
+        host="localhost", username="", password="", index="document", similarity="cosine"
     )
-    return container, document_store
+    st_retriever = get_nn_retriever(document_store, RETRIEVER)
+    return document_store, st_retriever
 
 
 config = {
             "outtmpl": "/tmp/seamless_downloads/%(id)s-%(extractor)s.%(ext)s",
             "subtitleslangs": ["en"],
             "writeautomaticsub": True,
-            #"writesubtitles": True,
-            #"allsubtitles": True,
             "subtitlesformat": "srt",
             "skip_download": True,
             "verbose": 3
@@ -83,7 +74,8 @@ urls = ['https://www.youtube.com/watch?v=qlB0TPBQ7YY', 'https://www.youtube.com/
 	    'https://www.youtube.com/watch?v=Suhp3OLASSo', 'https://www.youtube.com/watch?v=sNfkZFVm_xs',
 	    'https://www.youtube.com/watch?v=V8FEFw50lg4', 'https://www.youtube.com/watch?v=A8F4Qga3NaM']
 
-docker_container, es = test_db()
+
+document_store, st_retriever = load_models()
 for url in urls:
     youtube_downloader = YoutubeDLMultiMediaExtractor(config=None)
     url_audio_info, url_loc = youtube_downloader.extract(url)
@@ -96,6 +88,4 @@ for url in urls:
         }
 
     youtube_docs = _cleanup_yt_subtitles(url_loc, meta)
-    es.write_documents(youtube_docs)
-
-#https://us-west2-scratchpad-348314.cloudfunctions.net/yt_parser
+    write_docs_and_update_embed(document_store, youtube_docs, st_retriever)

@@ -6,16 +6,16 @@ services:
       dockerfile: DOCKERFILE
     image: "scratchpad:0.9"
     # in recent docker-compose version you can enable GPU resources. Make sure to fulfill the prerequisites listed here: https://docs.docker.com/compose/gpu-support/
-    #deploy:
-    #  resources:
-    #    reservations:
-    #      devices:
-    #      - driver: nvidia
-    #        count: 1
-    #        capabilities: [gpu]
+    deploy:
+      resources:
+        reservations:
+          devices:
+          - driver: nvidia
+            count: 1
+            capabilities: [gpu]
     # # Mount custom Pipeline YAML and custom Components.
-    # volumes:
-    #   - ./rest_api/pipeline:/home/user/rest_api/pipeline
+    #volumes:
+    #  - ./rest_api/pipeline:/home/user/rest_api/pipeline
     ports:
       - 8000:8000
     restart: on-failure
@@ -38,14 +38,14 @@ services:
     volumes:
       - ./esdata:/var/lib/elasticsearch/data:rw
 
-  #ui:
-  #  build:
-  #    context: ui
-  #    dockerfile: Dockerfile
-  #  image: scratchpad-frontend:v0.1
-  #  ports:
-  #    - 8501:8501
-  #  restart: on-failure
-  #  environment:
-  #    - API_ENDPOINT=http://scratchpad-api:8000
-  #  command: "/bin/bash -c 'streamlit run frontend.py'"
+  ui:
+    build:
+      context: frontend
+      dockerfile: DOCKERFILE-FRONTEND
+    image: scratchpad-frontend:0.2
+    ports:
+      - 8501:8501
+    restart: on-failure
+    environment:
+      - API_ENDPOINT=http://scratchpad-api:8000
+    command: "/bin/bash -c 'streamlit run frontend/frontend.py'"

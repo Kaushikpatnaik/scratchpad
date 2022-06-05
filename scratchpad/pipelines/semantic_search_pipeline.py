@@ -22,10 +22,11 @@ class JoinNode(RootNode):
             output = {}
             output['documents'] = []
             for input_dict in inputs:
-                output['documents'] += input_dict["documents"]
-                for k in input_dict.keys():
-                    if k != 'documents':
-                        output[k] = input_dict[k]
+                if input_dict["documents"] not in output['documents']:
+                    output['documents'] += input_dict["documents"]
+                    for k in input_dict.keys():
+                        if k != 'documents':
+                            output[k] = input_dict[k]
             output['node_id'] = 'Joiner'
         return output, "output"
 

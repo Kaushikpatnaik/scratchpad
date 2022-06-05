@@ -98,7 +98,7 @@ def generate_readwise_docs(readwise_file_path):
     for idx, row in data.iterrows():
         row_dict = str_converter.convert(
             row.raw_string,
-            meta={"src_path": row.doc_hash, "title": row.title, "author": row.author},
+            meta={"src_path": row.doc_hash, "file_name": row.title, "author": row.author, "src_type": "twt"},
         )
         readwise_docs.append(row_dict)
 

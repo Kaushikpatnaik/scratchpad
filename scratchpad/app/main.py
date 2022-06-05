@@ -7,6 +7,7 @@ Server code. Support following endpoints
 5. Click through data from users
 """
 
+import copy
 import uvicorn
 import shutil
 import logging
@@ -39,10 +40,19 @@ DEFAULT_CONFIG = {
 }
 FILE_UPLOAD_PATH = '/home/user/app/file-upload'
 DEFAULT_PARAMS = {
-    "ESRetriever": {"top_k": 20},
-    "STRetriever": {"top_k": 20},
+    "ESRetriever": {"top_k": 200},
+    "STRetriever": {"top_k": 200},
     "Ranker": {"top_k": 20}
 }
+BM25_SEARCH_PARAMS = {
+    "ESRetriever": {"top_k": 200},
+    "Ranker": {"top_k": 20}
+}
+NN_SEARCH_PARAMS = {
+    "STRetriever": {"top_k": 200},
+    "Ranker": {"top_k": 20}
+}
+
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -87,22 +97,18 @@ def parse_youtube(data: UrlModel):
 
 @app.get("/comb_search")
 def combined_search(query: str):
-    comb_results = pipeline_search(query, comb_ranker, params=DEFAULT_PARAMS)
+    comb_results = pipeline_search(query, comb_ranker, params=NN_SEARCH_PARAMS)
     return comb_results
 
 
 @app.get("/bm25_search")
 def bm25_search(query: str):
-    mod_params = DEFAULT_PARAMS
-    del mod_params["STRetriever"]
-    bm25_results = pipeline_search(query, bm25_ranker, params=mod_params)
+    bm25_results = pipeline_search(query, bm25_ranker, params=BM25_SEARCH_PARAMS)
     return bm25_results
 
 
 @app.get("/nn_search")
 def nn_search(query: str):
-    mod_params = DEFAULT_PARAMS
-    del mod_params["ESRetriever"]
     dense_results = pipeline_search(query, dense_ranker, params=DEFAULT_PARAMS)
     return dense_results
 
