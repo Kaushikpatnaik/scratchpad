@@ -15,7 +15,7 @@ logger.setLevel(logging.DEBUG)
 RETRIEVER = "sentence-transformers/all-mpnet-base-v2"
 
 DATA_LOC = "/home/dexter89_kp/Desktop/scratchpad/data"
-READWISE_FILE_NAME = "readwise-data_06_02_2022.csv"
+READWISE_FILE_NAME = "readwise-data_09_02_2022.csv"
 EMAILS_LOC = "emails"
 
 

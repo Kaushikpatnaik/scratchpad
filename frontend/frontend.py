@@ -89,11 +89,12 @@ def main():
         button_clicked = st.button("Search")
 
     # if search is pressed need to add containers with search results
+    # Add code that pressing enter also launches search
     if button_clicked:
         search_endpoint = API_ENDPOINT + "/comb_search"
         response = requests.get(search_endpoint, params={'query': selected})
-        response_json = response.json()
         if response.status_code == 200:
+            response_json = response.json()
             st.markdown(
                 "<hr />",
                 unsafe_allow_html=True
@@ -130,6 +131,15 @@ def main():
                         ]),
                         unsafe_allow_html=True
                         )
+        else:
+            st.markdown(
+                "<hr />",
+                unsafe_allow_html=True
+            )
+            utils.unset_bg_hack()
+            with st.container():
+                st.header("Backend Error!!! :(")
+
 
 
 if __name__ == "__main__":

@@ -1,0 +1,76 @@
+FROM ubuntu:20.04
+#FROM nvidia/cuda:11.3.1-runtime-ubuntu20.04
+
+WORKDIR /home/user
+
+RUN apt-get update && apt-get install -y software-properties-common && \
+    add-apt-repository ppa:deadsnakes/ppa && \
+    apt-get install -y \
+        cmake \
+        curl \
+        git \
+        vim \
+        libpoppler-cpp-dev \
+        libtesseract-dev \
+        pkg-config \
+        poppler-utils \
+        python3-pip \
+        python3.8 \
+        python3.8-dev \
+        python3.8-distutils \
+        swig \
+        tesseract-ocr \
+        wget && \
+    rm -rf /var/lib/apt/lists/*
+
+#RUN wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/cuda-keyring_1.0-1_all.deb
+
+# Install PDF converter
+RUN curl -s https://dl.xpdfreader.com/xpdf-tools-linux-4.04.tar.gz | tar -xvzf - -C /usr/local/bin --strip-components=2 xpdf-tools-linux-4.04/bin64/pdftotext
+
+RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \ 
+    && echo "deb http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list
+RUN apt-get update && apt-get -y install google-chrome-stable
+
+#RUN wget -q https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+#RUN apt-get update && apt-get install ./google-chrome-stable_current_amd64.deb
+
+# Install conda
+#RUN wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
+#RUN bash Miniconda3-latest-Linux-x86_64.sh -b -p /miniconda
+#ENV PATH=$PATH:/miniconda/condabin:/miniconda/bin
+
+# initialize conda environment
+#COPY ./conda_env.yml /home/user/conda_env.yml
+#RUN conda env create -f /home/user/conda_env.yml
+#ENV PATH /opt/conda/envs/scratchpad/bin:$PATH
+#ENV CONDA_DEFAULT_ENV scratchpad
+#RUN /bin/bash -c "conda init"
+#RUN /bin/bash -c "source activate scratchpad"
+#SHELL ["conda", "run", "-n", "scratchpad", "/bin/bash", "-c"]
+
+COPY ./requirements.txt /home/user/requirements.txt
+
+#RUN pip install -r /home/user/requirements.txt
+
+# download haystack repository for install
+RUN git clone https://github.com/deepset-ai/haystack.git
+RUN pip install /home/user/haystack[all,ocr,crawler,preprocessing]
+RUN pip install torch torchvision torchaudio --upgrade
+
+RUN pip install uvicorn fastapi google-cloud-storage google-cloud-speech youtube_dl pydub grpcio grpcio-status python-multipart webvtt-py tqdm
+
+# folder for /file-upload
+RUN mkdir -p /home/user/app/file-upload
+RUN chmod 777 /home/user/app/file-upload
+
+EXPOSE 8000
+
+COPY ./ /home/user/scratchpad
+
+#RUN apt-get install -y git-lfs
+#RUN git lfs install --skip-repo
+#RUN git clone https://huggingface.co/cross-encoder/ms-marco-MiniLM-L-6-v2 /home/usr/scratchpad/checkpoints/cross-encoder
+#RUN git clone https://huggingface.co/sentence-transformers/all-mpnet-base-v2 /home/usr/scratchpad/checkpoints/sentence-transformers
+
+#CMD ["uvicorn", "scratchpad.app.main:app", "--host", "0.0.0.0", "--port", "8000"]
