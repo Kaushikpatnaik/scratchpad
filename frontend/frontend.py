@@ -39,7 +39,7 @@ def main():
         page_title="Scratchpad: Your personalized search engine",
         page_icon="frontend/asset/images/svg-1@2x.png",
         layout="wide",
-        initial_sidebar_state="collapsed"
+        initial_sidebar_state="auto"
     )
 
     utils.local_css("frontend/asset/css/style.css")
@@ -67,7 +67,6 @@ def main():
         if link_added:
             yt_endpoint = API_ENDPOINT + "/parse/youtube/"
             response = requests.post(yt_endpoint, data={'url': link})
-            print(response)
             st.write(str(link) + " Uploaded. Youtube videos take time to parse. Please wait for some time to search within youtube videos")
         
         url = st.text_input("Parse Website Text")
@@ -75,9 +74,7 @@ def main():
         
         if url_added:
             url_endpoint = API_ENDPOINT + "/parse/url"
-            print(url)
             response = requests.post(url_endpoint, data=url)
-            print(response, response.json())
             st.write(str(url) + " Parsed website text")
 
     st.markdown(utils.C1_SEARCH_BOX_INFO, unsafe_allow_html=True)
@@ -87,10 +84,10 @@ def main():
     with col2:
         selected = st.text_input("")
         button_clicked = st.button("Search")
-
+        
     # if search is pressed need to add containers with search results
     # Add code that pressing enter also launches search
-    if button_clicked:
+    if button_clicked or selected != "":
         search_endpoint = API_ENDPOINT + "/comb_search"
         response = requests.get(search_endpoint, params={'query': selected})
         if response.status_code == 200:
@@ -139,7 +136,9 @@ def main():
             utils.unset_bg_hack()
             with st.container():
                 st.header("Backend Error!!! :(")
-
+    else:
+        with col2:
+            st.markdown(utils.C1_INSTRUCTIONS_INFO, unsafe_allow_html=True)
 
 
 if __name__ == "__main__":

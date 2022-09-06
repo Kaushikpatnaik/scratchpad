@@ -32,7 +32,7 @@ services:
     build:
       context: frontend
       dockerfile: DOCKERFILE-FRONTEND
-    image: kaushikpatnaik89/scratchpad-docker:frontend_0.2
+    image: scratchpad-docker:frontend_0.2
     ports:
       - 8501:8501
     restart: on-failure

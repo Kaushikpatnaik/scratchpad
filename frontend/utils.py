@@ -16,6 +16,17 @@ C1_SEARCH_BOX_INFO = """
 <h2 class="font-title" style='text-align: center'><i>Scratchpad</i></h2>
 </div>
 """.strip()
+C1_INSTRUCTIONS_INFO = """
+<div class="instructions-div">
+<br>
+<br>
+<br>
+<h4 class="font-title" style='text-align: left'><i>Instructions</i></h4>
+<ol>
+  <li>Add your documents, websites, youtube urls on the left</li>
+  <li>Perform semantic search within documents</li>
+</ol>
+"""
 
 
 def load_image_from_local(image_path, image_resize=None):
