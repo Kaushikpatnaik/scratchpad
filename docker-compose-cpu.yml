@@ -3,7 +3,7 @@ services:
   scratchpad-api:
     build:
       context: scratchpad
-      dockerfile: DOCKERFILE
+      dockerfile: DOCKERFILE-CPU
     image: "scratchpad-docker-cpu:0.1"
     # in recent docker-compose version you can enable GPU resources. Make sure to fulfill the prerequisites listed here: https://docs.docker.com/compose/gpu-support/
     ports:
@@ -12,6 +12,7 @@ services:
     environment:
       - ELASTICSEARCH_HOSTS=elasticsearch
       - cluster.name=docker-cluster
+      - TOKENIZERS_PARALLELISM=false
     depends_on:
       - elasticsearch
     command: "/bin/bash -c 'sleep 10 && gunicorn scratchpad.app.main:app -b 0.0.0.0 -k uvicorn.workers.UvicornWorker --workers 1 --timeout 180'"

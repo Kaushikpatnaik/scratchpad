@@ -74,7 +74,10 @@ def main():
         
         if url_added:
             url_endpoint = API_ENDPOINT + "/parse/url"
+            st.write(str(url_endpoint))
             response = requests.post(url_endpoint, data=url)
+            st.write(str(response))
+            st.write(str(url))
             st.write(str(url) + " Parsed website text")
 
     st.markdown(utils.C1_SEARCH_BOX_INFO, unsafe_allow_html=True)
