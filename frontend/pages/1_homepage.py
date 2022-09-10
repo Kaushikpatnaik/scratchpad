@@ -139,10 +139,8 @@ def main():
             utils.unset_bg_hack()
             with st.container():
                 st.header("Backend Error!!! :(")
-    else:
-        with col2:
-            st.markdown(utils.C1_INSTRUCTIONS_INFO, unsafe_allow_html=True)
 
 
 if __name__ == "__main__":
     main()
+

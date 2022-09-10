@@ -20,7 +20,7 @@ RUN apt-get update && apt-get install -y software-properties-common && \
         wget && \
     rm -rf /var/lib/apt/lists/*
 
-RUN pip install streamlit
+RUN pip install --upgrade streamlit
 
 EXPOSE 8501
 

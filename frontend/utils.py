@@ -19,13 +19,28 @@ C1_SEARCH_BOX_INFO = """
 C1_INSTRUCTIONS_INFO = """
 <div class="instructions-div">
 <br>
+<h2 class="font-title" style='text-align: center'><i>Welcome to Scratchpad</i></h2>
+<h3 class="font-title" style='text-align: center'><i>Personalized search engine for your private data</i></h3>
 <br>
-<br>
-<h4 class="font-title" style='text-align: left'><i>Instructions</i></h4>
+<h3 class="font-title" style='text-align: left'>
+&emsp; About
+</h3>
 <ol>
-  <li>Add your documents, websites, youtube urls on the left</li>
-  <li>Perform semantic search within documents</li>
+  <li>Helps you search across all services (twitter, youtube, websites) and documents your interact with</li>
+  <li>Search within the documents and text to fetch relevant information</li>
+  <li>Use natural language queries for search, in addition to keywords</li>
+  <li>Search that is completely personalized for your data</li>
+  <li>Improves with time based on interaction</li>
 </ol>
+<h3 class="font-title" style='text-align: left'>
+&emsp; How to use
+</h3>
+<ol>
+  <li>Navigate to homepage</li>
+  <li>Add your documents, websites, youtube urls on the left</li>
+  <li>Perform search within your data</li>
+</ol>
+</div>
 """
 
 

@@ -17,3 +17,4 @@ curl -X POST "http://127.0.0.0:80/parse/document" -d '{"data": "/home/dexter89_k
 
 curl -X POST "http://127.0.0.0:80/parse/url" -d '{"data": "https://future.a16z.com/podcasts/ai-ml-economics-complexity-data-science-company-building/"}'
 
+curl -d '{"url":"https://www.mindtheproduct.com/the-purlct-market-fit-engine-by-rahul-vohra/"}' -H "Content-Type: application/json" -X POST http://localhost:8000/parse/url

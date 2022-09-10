@@ -11,6 +11,7 @@ def test_urls():
         "https://foxhillkitchens.com/are-seed-oils-bad-for-you/?utm_source=pocket_mylist",
         "https://userpilot.com/blog/build-minimum-lovable-mlp-product/?utm_source=pocket_mylist",
         "https://future.a16z.com/data50/?utm_source=pocket_mylist",
+        "https://www.mindtheproduct.com/the-product-market-fit-engine-by-rahul-vohra/",
     ]
 
 
