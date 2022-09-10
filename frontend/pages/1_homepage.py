@@ -66,7 +66,7 @@ def main():
 
         if link_added:
             yt_endpoint = API_ENDPOINT + "/parse/youtube/"
-            response = requests.post(yt_endpoint, data={'url': link})
+            response = requests.post(yt_endpoint, json={'url': link})
             st.write(str(link) + " Uploaded. Youtube videos take time to parse. Please wait for some time to search within youtube videos")
         
         url = st.text_input("Parse Website Text")
@@ -74,11 +74,7 @@ def main():
         
         if url_added:
             url_endpoint = API_ENDPOINT + "/parse/url"
-            st.write(str(url_endpoint))
-            response = requests.post(url_endpoint, data=url)
-            st.write(str(response))
-            st.write(str(url))
-            st.write(str(url) + " Parsed website text")
+            response = requests.post(url_endpoint, json={'url': url})
 
     st.markdown(utils.C1_SEARCH_BOX_INFO, unsafe_allow_html=True)
     
