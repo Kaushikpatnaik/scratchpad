@@ -30,7 +30,7 @@ C1_INSTRUCTIONS_INFO = """
   <li>Search within the documents to fetch relevant information</li>
   <li>Natural language queries in addition to keywords</li>
   <li>Completely personalized for your data</li>
-  <li>Improves with time based on interaction</li>
+  <li>Improves over time, based on interaction</li>
 </ol>
 <h3 class="font-title" style='text-align: left'>
 &emsp; How to use
