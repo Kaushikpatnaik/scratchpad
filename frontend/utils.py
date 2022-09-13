@@ -26,10 +26,10 @@ C1_INSTRUCTIONS_INFO = """
 &emsp; About
 </h3>
 <ol>
-  <li>Helps you search across all services (twitter, youtube, websites) and documents your interact with</li>
-  <li>Search within the documents and text to fetch relevant information</li>
-  <li>Use natural language queries for search, in addition to keywords</li>
-  <li>Search that is completely personalized for your data</li>
+  <li>Search across services (twitter, youtube, websites) and documents you interact with</li>
+  <li>Search within the documents to fetch relevant information</li>
+  <li>Natural language queries in addition to keywords</li>
+  <li>Completely personalized for your data</li>
   <li>Improves with time based on interaction</li>
 </ol>
 <h3 class="font-title" style='text-align: left'>
