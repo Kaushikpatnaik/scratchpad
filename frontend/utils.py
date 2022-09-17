@@ -16,11 +16,15 @@ C1_SEARCH_BOX_INFO = """
 <h2 class="font-title" style='text-align: center'><i>Scratchpad</i></h2>
 </div>
 """.strip()
-C1_INSTRUCTIONS_INFO = """
-<div class="instructions-div">
+C1_LANDING_HEADING = """
+<div class="headline-div">
 <br>
 <h2 class="font-title" style='text-align: center'><i>Welcome to Scratchpad</i></h2>
 <h3 class="font-title" style='text-align: center'><i>Personalized search engine for your private data</i></h3>
+</div>
+"""
+C1_INSTRUCTIONS_INFO = """
+<div class="instructions-div">
 <br>
 <h3 class="font-title" style='text-align: left'>
 &emsp; About

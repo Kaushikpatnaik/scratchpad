@@ -14,6 +14,11 @@ def test_urls():
         "https://www.mindtheproduct.com/the-product-market-fit-engine-by-rahul-vohra/",
     ]
 
+from scratchpad.preprocessing.website_converter import scrape_website_to_dict
+urls = ["https://www.ycombinator.com/howtoapply"]
+generated_docs = scrape_website_to_dict(urls)
+
+
 
 def test_scrape_website_to_dict(urls):
     generated_docs = scrape_website_to_dict(urls)

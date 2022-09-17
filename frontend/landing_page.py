@@ -77,6 +77,10 @@ def main():
             footer {visibility: hidden;}
             </style> """, unsafe_allow_html=True)
 
+        st.markdown(utils.C1_LANDING_HEADING, unsafe_allow_html=True)
+
+        st.video("https://youtu.be/I43YETWiqzg")
+
         st.markdown(utils.C1_INSTRUCTIONS_INFO, unsafe_allow_html=True)    
 
 

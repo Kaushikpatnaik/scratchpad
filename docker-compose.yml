@@ -39,10 +39,10 @@ services:
     build:
       context: frontend
       dockerfile: DOCKERFILE-FRONTEND
-    image: kaushikpatnaik89/scratchpad-docker:frontend_0.2
+    image: scratchpad-docker:frontend_0.2
     ports:
       - 8501:8501
     restart: on-failure
     environment:
       - API_ENDPOINT=http://scratchpad-api:8000
-    command: "/bin/bash -c 'streamlit run frontend/frontend.py'"
+    command: "/bin/bash -c 'streamlit run frontend/landing_page.py'"
