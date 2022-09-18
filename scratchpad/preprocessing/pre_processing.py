@@ -88,7 +88,7 @@ def preprocess_add_videos(url_list: Sequence[str], processor_args: dict = {}):
     return processor.process(youtube_docs)
 
 
-def preprocess_add_websites(url_list: Sequence[str], processor_args: dict = {}):
+def preprocess_add_websites(url_list: Sequence[str], user = str, processor_args: dict = {}):
 
     processor = PreProcessor(
         clean_empty_lines=processor_args.get("clean_empty_lines", True),
@@ -102,6 +102,6 @@ def preprocess_add_websites(url_list: Sequence[str], processor_args: dict = {}):
         split_overlap=processor_args.get("split_overlap", 3),
     )
 
-    url_docs = scrape_website_to_dict(url_list)
+    url_docs = scrape_website_to_dict(url_list, user)
 
     return processor.process(url_docs)

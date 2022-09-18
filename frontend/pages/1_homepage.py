@@ -51,6 +51,8 @@ def main():
         footer {visibility: hidden;}
         </style> """, unsafe_allow_html=True)
 
+    user_name = st.session_state["username"]
+
     with st.sidebar:
         st.markdown(utils.C2_HEADER_INFO, unsafe_allow_html=True)
         file = st.file_uploader("Upload a pdf, csv or docx file")
@@ -58,7 +60,7 @@ def main():
 
         if file_added:
             file_endpoint = API_ENDPOINT + "/parse/document"
-            response = requests.post(file_endpoint, files={'docs': file})
+            response = requests.post(file_endpoint, files={'docs': file, 'user': user_name})
             st.write(str(file.name) + " Uploaded")
 
         link = st.text_input("Add youtube video")
@@ -66,7 +68,7 @@ def main():
 
         if link_added:
             yt_endpoint = API_ENDPOINT + "/parse/youtube/"
-            response = requests.post(yt_endpoint, json={'url': link})
+            response = requests.post(yt_endpoint, json={'url': link, 'user': user_name})
             st.write(str(link) + " Uploaded. Youtube videos take time to parse. Please wait for some time to search within youtube videos")
         
         url = st.text_input("Parse Website Text")
@@ -74,7 +76,7 @@ def main():
         
         if url_added:
             url_endpoint = API_ENDPOINT + "/parse/url"
-            response = requests.post(url_endpoint, json={'url': url})
+            response = requests.post(url_endpoint, json={'url': url, 'user': user_name})
 
     st.markdown(utils.C1_SEARCH_BOX_INFO, unsafe_allow_html=True)
     
@@ -88,7 +90,7 @@ def main():
     # Add code that pressing enter also launches search
     if button_clicked or selected != "":
         search_endpoint = API_ENDPOINT + "/comb_search"
-        response = requests.get(search_endpoint, params={'query': selected})
+        response = requests.get(search_endpoint, params={'query': selected, 'user': user_name})
         if response.status_code == 200:
             response_json = response.json()
             st.markdown(

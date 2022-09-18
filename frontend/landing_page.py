@@ -23,7 +23,7 @@ def check_password():
         ):
             st.session_state["password_correct"] = True
             del st.session_state["password"]  # don't store username + password
-            del st.session_state["username"]
+            #del st.session_state["username"] # user username for logging uploads and queries
         else:
             st.session_state["password_correct"] = False
 

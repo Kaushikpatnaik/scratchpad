@@ -243,7 +243,7 @@ def _cleanup_yt_subtitles(vtt_file, meta, batch_size=60):
     return docs
 
 
-def generate_youtube_transcript_docs(url: str, downloader_config: dict = None):
+def generate_youtube_transcript_docs(url: str, user: str, downloader_config: dict = None):
     youtube_downloader = YoutubeDLMultiMediaExtractor(config=downloader_config)
 
     hash_object = hashlib.md5(str(url).encode("utf-8"))
@@ -256,7 +256,8 @@ def generate_youtube_transcript_docs(url: str, downloader_config: dict = None):
             "src_type": "yt",
             "title": url_audio_info.get('title', url),
             "file_name": url_audio_info.get('title', url),
-            "author": url_audio_info.get('author', '')
+            "author": url_audio_info.get('author', ''),
+            "user": user
         }
 
     youtube_docs = _cleanup_yt_subtitles(url_loc, meta)

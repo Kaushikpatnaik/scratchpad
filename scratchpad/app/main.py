@@ -71,50 +71,57 @@ app = FastAPI()
 
 class UrlModel(BaseModel):
     url: str
+    user: str
 
 
 @app.post("/parse/url")
 def parse_website(data: UrlModel):
     logger.info(f"Inside parse website function in main {data}")
-    url_processed_data = preprocess_add_websites([data.url])
+    url_processed_data = preprocess_add_websites([data.url], data.user)
     write_docs_and_update_embed(document_store, url_processed_data, st_retriever)
 
 
 @app.post("/parse/document")
-def parse_documents(docs: UploadFile = File(...)):
+def parse_documents(docs: UploadFile = File(...), user: str = ""):
     file_path = Path(FILE_UPLOAD_PATH) / f"{docs.filename}"
     with file_path.open("wb") as buffer:
         shutil.copyfileobj(docs.file, buffer)
-    docs_processed_data = preprocess_text([str(file_path)])
+    docs_processed_data = preprocess_text([str(file_path)], user)
     write_docs_and_update_embed(document_store, docs_processed_data, st_retriever)
 
 
 @app.post("/parse/youtube")
 def parse_youtube(data: UrlModel):
-    yt_processed_data = preprocess_add_videos([data.url])
+    yt_processed_data = preprocess_add_videos([data.url], data.user)
     write_docs_and_update_embed(document_store, yt_processed_data, st_retriever)
 
 
 @app.get("/comb_search")
-def combined_search(query: str):
-    comb_results = pipeline_search(query, comb_ranker, params=NN_SEARCH_PARAMS)
+def combined_search(query: str, user: str):
+    params = NN_SEARCH_PARAMS
+    params["filters"] = {"user": user}
+    comb_results = pipeline_search(query, comb_ranker, params=params)
     return comb_results
 
 
 @app.get("/bm25_search")
-def bm25_search(query: str):
-    bm25_results = pipeline_search(query, bm25_ranker, params=BM25_SEARCH_PARAMS)
+def bm25_search(query: str, user: str):
+    params = BM25_SEARCH_PARAMS
+    params["filters"] = {"user": user}
+    bm25_results = pipeline_search(query, bm25_ranker, params=params)
     return bm25_results
 
 
 @app.get("/nn_search")
-def nn_search(query: str):
-    dense_results = pipeline_search(query, dense_ranker, params=DEFAULT_PARAMS)
+def nn_search(query: str, user: str):
+    params = DEFAULT_PARAMS
+    params["filters"] = {"user": user}
+    dense_results = pipeline_search(query, dense_ranker, params=params)
     return dense_results
 
 
 @app.get("/user_click_search")
-def click_search_result(result: str):
+def click_search_result(result: str, user: str):
     raise NotImplementedError
 
 

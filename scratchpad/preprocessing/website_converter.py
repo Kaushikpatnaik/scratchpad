@@ -432,7 +432,7 @@ class Crawler(BaseComponent):
         return sub_links
 
 
-def scrape_website_to_dict(urls: Sequence[str]):
+def scrape_website_to_dict(urls: Sequence[str], user: str):
     logger.info(f"Inside scrape website to dict function in website_converter {urls}")
     crawler = Crawler(output_dir=tempfile.gettempdir())
 
@@ -450,6 +450,7 @@ def scrape_website_to_dict(urls: Sequence[str]):
         jsonf_data["meta"]["file_name"] = url
         jsonf_data["meta"]["src_ptr"] = hash_string
         jsonf_data["meta"]["src_type"] = "url"
+        jsonf_data["meta"]["user"] = user
         url_docs.append(jsonf_data)
 
     return url_docs
