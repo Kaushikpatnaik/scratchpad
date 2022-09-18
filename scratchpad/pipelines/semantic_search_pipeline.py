@@ -28,6 +28,7 @@ class JoinNode(RootNode):
                         if k != 'documents':
                             output[k] = input_dict[k]
             output['node_id'] = 'Joiner'
+            print(output)
         return output, "output"
 
 

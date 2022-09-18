@@ -8,6 +8,7 @@ Server code. Support following endpoints
 """
 
 import copy
+import os
 import uvicorn
 import shutil
 import logging
@@ -52,6 +53,7 @@ NN_SEARCH_PARAMS = {
     "STRetriever": {"top_k": 200},
     "Ranker": {"top_k": 20}
 }
+os.environ["HAYSTACK_TELEMETRY_ENABLED"] = "False"
 
 
 logging.basicConfig(level=logging.INFO)

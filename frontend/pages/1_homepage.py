@@ -9,6 +9,7 @@ import utils
 
 
 API_ENDPOINT=os.environ.get('API_ENDPOINT', 'http://localhost:8000')
+os.environ["HAYSTACK_TELEMETRY_ENABLED"] = "False"
 
 def parse_search_results(request_json):
     result_documents = request_json['documents']
@@ -51,7 +52,7 @@ def main():
         footer {visibility: hidden;}
         </style> """, unsafe_allow_html=True)
 
-    user_name = st.session_state["username"]
+    user_name = st.session_state["user_name"]
 
     with st.sidebar:
         st.markdown(utils.C2_HEADER_INFO, unsafe_allow_html=True)

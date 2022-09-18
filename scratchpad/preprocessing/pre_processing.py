@@ -17,7 +17,7 @@ from scratchpad.preprocessing.youtube_converter import generate_youtube_transcri
 from scratchpad.preprocessing.website_converter import scrape_website_to_dict
 
 
-def preprocess_readwise(file: str, processor_args: dict = {}):
+def preprocess_readwise(file: str, user: str, processor_args: dict = {}):
     """
     Given readwise export process the csv
     """
@@ -34,12 +34,12 @@ def preprocess_readwise(file: str, processor_args: dict = {}):
         split_overlap=processor_args.get("split_overlap", 3),
     )
 
-    readwise_docs = generate_readwise_docs(file)
+    readwise_docs = generate_readwise_docs(file, user)
 
     return processor.process(readwise_docs)
 
 
-def preprocess_text(file_list: Sequence[str], processor_args: dict = {}):
+def preprocess_text(file_list: Sequence[str], user: str, processor_args: dict = {}):
     """
     Given list of documents to process, convert and preprocess them. Post processing,
     add them to the database
@@ -57,17 +57,17 @@ def preprocess_text(file_list: Sequence[str], processor_args: dict = {}):
         split_overlap=processor_args.get("split_overlap", 3),
     )
 
-    docx_docs = generate_docx_docs(file_list)
-    pdf_docs = generate_pdf_docs(file_list)
-    txt_docs = generate_txt_docs(file_list)
-    md_docs = generate_md_docs(file_list)
+    docx_docs = generate_docx_docs(file_list, user)
+    pdf_docs = generate_pdf_docs(file_list, user)
+    txt_docs = generate_txt_docs(file_list, user)
+    md_docs = generate_md_docs(file_list, user)
 
     all_docs = docx_docs + pdf_docs + txt_docs + md_docs
 
     return processor.process(all_docs)
 
 
-def preprocess_add_videos(url_list: Sequence[str], processor_args: dict = {}):
+def preprocess_add_videos(url_list: Sequence[str], user: str, processor_args: dict = {}):
 
     processor = PreProcessor(
         clean_empty_lines=processor_args.get("clean_empty_lines", True),
@@ -83,7 +83,7 @@ def preprocess_add_videos(url_list: Sequence[str], processor_args: dict = {}):
 
     youtube_docs = []
     for url in url_list:
-        youtube_docs += generate_youtube_transcript_docs(url=url)
+        youtube_docs += generate_youtube_transcript_docs(url=url, user=user)
 
     return processor.process(youtube_docs)
 

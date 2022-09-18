@@ -4,7 +4,7 @@ services:
     build:
       context: scratchpad
       dockerfile: DOCKERFILE
-    image: "kaushikpatnaik89/scratchpad-docker:0.9"
+    image: "scratchpad-docker:0.9"
     # in recent docker-compose version you can enable GPU resources. Make sure to fulfill the prerequisites listed here: https://docs.docker.com/compose/gpu-support/
     deploy:
       resources:
