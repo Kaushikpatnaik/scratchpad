@@ -8,6 +8,7 @@ Server code. Support following endpoints
 """
 
 import copy
+from distutils.command.config import config
 import os
 import uvicorn
 import shutil
@@ -33,11 +34,13 @@ from scratchpad.pipelines.semantic_search_pipeline import (
     pipeline_search,
     combined_search_pipeline
 )
+from scratchpad.pipelines.summarization import summarize_pipeline, pipeline_summarize
 
 
 DEFAULT_CONFIG = {
     "RANKER": "cross-encoder/ms-marco-MiniLM-L-6-v2",
     "ST_RETRIEVER": "sentence-transformers/all-mpnet-base-v2",
+    "SUMMARIZER": "google/pegasus-xsum"
 }
 FILE_UPLOAD_PATH = '/home/user/app/file-upload'
 DEFAULT_PARAMS = {
@@ -62,10 +65,11 @@ logger = logging.getLogger(__name__)
 document_store = ElasticsearchDocumentStore(
     host="elasticsearch", username="", password="", index="document", similarity="cosine"
 )
-st_retriever = get_nn_retriever(document_store, DEFAULT_CONFIG.get("ST_RETRIEVER"))
-bm25_ranker = bm25_ranker_search_pipeline(document_store, config=DEFAULT_CONFIG)
-dense_ranker = dense_retriever_ranker_search_pipeline(document_store, config=DEFAULT_CONFIG)
+#st_retriever = get_nn_retriever(document_store, DEFAULT_CONFIG.get("ST_RETRIEVER"))
+#bm25_ranker = bm25_ranker_search_pipeline(document_store, config=DEFAULT_CONFIG)
+#dense_ranker = dense_retriever_ranker_search_pipeline(document_store, config=DEFAULT_CONFIG)
 comb_ranker = combined_search_pipeline(document_store, config=DEFAULT_CONFIG)
+summarizer = summarize_pipeline(document_store, config=DEFAULT_CONFIG)
 
 
 app = FastAPI()
@@ -105,7 +109,7 @@ def combined_search(query: str, user: str):
     comb_results = pipeline_search(query, comb_ranker, params=params)
     return comb_results
 
-
+'''
 @app.get("/bm25_search")
 def bm25_search(query: str, user: str):
     params = BM25_SEARCH_PARAMS
@@ -120,6 +124,15 @@ def nn_search(query: str, user: str):
     params["filters"] = {"user": user}
     dense_results = pipeline_search(query, dense_ranker, params=params)
     return dense_results
+'''
+
+
+@app.get("/summarize")
+def retrieval_and_summarize(query: str, user: str):
+    params = DEFAULT_PARAMS
+    params["filters"] = {"user": user}
+    summary_results = pipeline_summarize(query, summarizer, params=params)
+    return summary_results
 
 
 @app.get("/user_click_search")

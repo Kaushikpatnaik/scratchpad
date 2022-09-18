@@ -23,21 +23,9 @@ def parse_search_results(request_json):
     return results_dict, num_results
 
 
-def get_thumnail_images():
-    pdf_thumb = utils.image_to_base64(utils.load_image_from_local("frontend/asset/images/pdf-icon_100.png"))
-    docx_thumb = utils.image_to_base64(utils.load_image_from_local("frontend/asset/images/word_100.png"))
-    txt_thumb = utils.image_to_base64(utils.load_image_from_local("frontend/asset/images/csv_100.png"))
-    url_thumb = utils.image_to_base64(utils.load_image_from_local("frontend/asset/images/website@2x_100.png"))
-    yt_thumb = utils.image_to_base64(utils.load_image_from_local("frontend/asset/images/youtube_100.png"))
-    twt_thumb = utils.image_to_base64(utils.load_image_from_local("frontend/asset/images/twitter_logo_100x100.png"))
-
-    return {'pdf': pdf_thumb, 'docx': docx_thumb, 'txt': txt_thumb, 'url': url_thumb, 'yt': yt_thumb, 'twt': twt_thumb}
-
-
-
 def main():
     st.set_page_config(
-        page_title="Scratchpad: Your personalized search engine",
+        page_title="Scratchpad: Your personalized assistant",
         page_icon="frontend/asset/images/svg-1@2x.png",
         layout="wide",
         initial_sidebar_state="auto"
@@ -85,12 +73,12 @@ def main():
     col1, col2, col3 = st.columns([3,4,3])
     with col2:
         selected = st.text_input("")
-        button_clicked = st.button("Search")
+        button_clicked = st.button("Summarize")
         
     # if search is pressed need to add containers with search results
     # Add code that pressing enter also launches search
     if button_clicked or selected != "":
-        search_endpoint = API_ENDPOINT + "/comb_search"
+        search_endpoint = API_ENDPOINT + "/retrieval_and_summarize"
         response = requests.get(search_endpoint, params={'query': selected, 'user': user_name})
         if response.status_code == 200:
             response_json = response.json()
@@ -100,10 +88,9 @@ def main():
             )
             utils.unset_bg_hack()
             with st.container():
-                st.header("Search results from Scratchpad")
+                st.header("Summary from Scratchpad")
 
                 results_dict, num_results = parse_search_results(response_json)
-                thumbnail_images = get_thumnail_images()
 
                 # dedup based on title
                 # going to hurt no title data
