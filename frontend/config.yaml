@@ -1,0 +1,15 @@
+credentials:
+  usernames:
+    demo:
+      email: kaushikpatnaik@gmail.com
+      name: KP
+      password: dontbreakinprod # To be replaced with hashed password
+    ycombinator:
+      email: ycombinator
+      name: ycombinator
+      password: hopeIgetin # To be replaced with hashed password
+cookie:
+  expiry_days: 0
+  key: some_signature_key
+  name: some_cookie_name
+preauthorized:

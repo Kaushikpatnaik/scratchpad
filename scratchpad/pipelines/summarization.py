@@ -9,7 +9,7 @@ from scratchpad.retrievers import get_es_retriever, get_nn_retriever
 from scratchpad.rankers import get_st_ranker
 from scratchpad.summarizer import get_pegasus_summarizer
 
-from semantic_search_pipeline import JoinNode, DEFAULT_CONFIG
+from scratchpad.pipelines.semantic_search_pipeline import JoinNode, DEFAULT_CONFIG
 
 logger = logging.getLogger(__name__)
 
