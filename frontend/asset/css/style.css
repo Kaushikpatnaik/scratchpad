@@ -13,3 +13,14 @@
 .img-wrapper{
     margin-right: 10px;
 }
+
+.stButton>button {
+    height: 4em;
+    width: 8em;
+    font-size: 24px;
+    background-color: #8aaef0;
+}
+
+.number_list ul li {
+    font-size: 1.2rem;
+  }

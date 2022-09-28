@@ -45,4 +45,4 @@ services:
     restart: on-failure
     environment:
       - API_ENDPOINT=http://scratchpad-api:8000
-    command: "/bin/bash -c 'streamlit run frontend/landing_page.py'"
+    command: "/bin/bash -c 'streamlit run frontend/Welcome.py'"

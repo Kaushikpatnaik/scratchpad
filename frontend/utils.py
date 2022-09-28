@@ -29,21 +29,28 @@ C1_INSTRUCTIONS_INFO = """
 <h3 class="font-title" style='text-align: left'>
 &emsp; About
 </h3>
-<ol>
+<div class="number_list">
+<ul>
   <li>Search across services (twitter, youtube, websites) and documents you interact with</li>
   <li>Search within the documents to fetch relevant information</li>
   <li>Natural language queries in addition to keywords</li>
   <li>Completely personalized for your data</li>
   <li>Improves over time, based on interaction</li>
-</ol>
+</ul>
+</div>
 <h3 class="font-title" style='text-align: left'>
 &emsp; How to use
 </h3>
-<ol>
+<div class="number_list">
+<ul style="font-size: 18px";>
   <li>Navigate to homepage</li>
   <li>Add your documents, websites, youtube urls on the left</li>
   <li>Perform search within your data</li>
-</ol>
+</ul>
+</div>
+<h3 class="font-title" style='text-align: left'>
+&emsp; Demo
+</h3>
 </div>
 """
 
