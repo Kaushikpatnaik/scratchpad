@@ -22,7 +22,7 @@ if not st.session_state["logged_in"]:
     footer {visibility: hidden;}
     </style> """, unsafe_allow_html=True)
 
-    with open('/home/dexter89_kp/Desktop/scratchpad/frontend/config.yaml') as file:
+    with open('/home/user/frontend/config.yaml') as file:
             config = yaml.load(file, Loader=yaml.SafeLoader)
 
     authenticator = stauth.Authenticate(
