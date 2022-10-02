@@ -39,14 +39,18 @@ from scratchpad.pipelines.summarization import summarize_pipeline, pipeline_summ
 
 DEFAULT_CONFIG = {
     "RANKER": "cross-encoder/ms-marco-MiniLM-L-6-v2",
-    "ST_RETRIEVER": "sentence-transformers/all-mpnet-base-v2",
-    "SUMMARIZER": "google/pegasus-xsum"
+    "ST_RETRIEVER": "sentence-transformers/all-mpnet-base-v2"
 }
 FILE_UPLOAD_PATH = '/home/user/app/file-upload'
 DEFAULT_PARAMS = {
     "ESRetriever": {"top_k": 200},
     "STRetriever": {"top_k": 200},
     "Ranker": {"top_k": 20}
+}
+DEFAULT_SUMM_PARAMS = {
+    "ESRetriever": {"top_k": 20},
+    "STRetriever": {"top_k": 20},
+    "Ranker": {"top_k": 5}
 }
 BM25_SEARCH_PARAMS = {
     "ESRetriever": {"top_k": 200},
@@ -65,7 +69,7 @@ logger = logging.getLogger(__name__)
 document_store = ElasticsearchDocumentStore(
     host="elasticsearch", username="", password="", index="document", similarity="cosine"
 )
-#st_retriever = get_nn_retriever(document_store, DEFAULT_CONFIG.get("ST_RETRIEVER"))
+st_retriever = get_nn_retriever(document_store, DEFAULT_CONFIG.get("ST_RETRIEVER"))
 #bm25_ranker = bm25_ranker_search_pipeline(document_store, config=DEFAULT_CONFIG)
 #dense_ranker = dense_retriever_ranker_search_pipeline(document_store, config=DEFAULT_CONFIG)
 comb_ranker = combined_search_pipeline(document_store, config=DEFAULT_CONFIG)
@@ -126,10 +130,9 @@ def nn_search(query: str, user: str):
     return dense_results
 '''
 
-
 @app.get("/summarize")
 def retrieval_and_summarize(query: str, user: str):
-    params = DEFAULT_PARAMS
+    params = DEFAULT_SUMM_PARAMS
     params["filters"] = {"user": user}
     summary_results = pipeline_summarize(query, summarizer, params=params)
     return summary_results

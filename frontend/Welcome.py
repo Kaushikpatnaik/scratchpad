@@ -1,14 +1,7 @@
-from pandas import read_sql_query
 import streamlit as st
-import streamlit_authenticator as stauth
-import random
-import string
-import requests
 import os
-import yaml
 
 import utils
-from streamlit_extras.switch_page_button import switch_page
 
 API_ENDPOINT=os.environ.get('API_ENDPOINT', 'http://localhost:8000')
 os.environ["HAYSTACK_TELEMETRY_ENABLED"] = "False"
@@ -48,7 +41,7 @@ def main():
         st.text("")
         st.text("")
         if st.button("Signup"):
-            switch_page("register")
+            utils.switch_page("register")
             
 
     with col4:
@@ -58,7 +51,7 @@ def main():
         st.text("")
         st.text("")
         if st.button("Login"):
-            switch_page("login")
+            utils.switch_page("login")
             
 
 

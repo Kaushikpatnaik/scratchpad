@@ -57,7 +57,7 @@ RUN git clone https://github.com/deepset-ai/haystack.git
 RUN pip install /home/user/haystack[all-gpu,ocr,crawler,preprocessing]
 RUN pip install torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cu113 --upgrade
 
-RUN pip install uvicorn fastapi google-cloud-storage google-cloud-speech youtube_dl pydub grpcio grpcio-status python-multipart webvtt-py tqdm
+RUN pip install uvicorn fastapi google-cloud-storage google-cloud-speech youtube_dl pydub grpcio grpcio-status python-multipart webvtt-py tqdm openai
 
 # folder for /file-upload
 RUN mkdir -p /home/user/app/file-upload

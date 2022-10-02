@@ -3,6 +3,7 @@ from pathlib import Path
 
 from haystack import Pipeline
 from haystack.pipelines import RootNode
+from haystack.nodes.base import BaseComponent
 
 from scratchpad.retrievers import get_es_retriever, get_nn_retriever
 from scratchpad.rankers import get_st_ranker
@@ -16,7 +17,9 @@ DEFAULT_CONFIG = {
 }
 
 
-class JoinNode(RootNode):
+class JoinNode(BaseComponent):
+    outgoing_edges = 1
+
     def run(self, output=None, inputs=None):
         if inputs:
             output = {}
@@ -28,8 +31,7 @@ class JoinNode(RootNode):
                         if k != 'documents':
                             output[k] = input_dict[k]
             output['node_id'] = 'Joiner'
-            print(output)
-        return output, "output"
+        return output, "output_1"
 
 
 def bm25_ranker_search_pipeline(document_store, config=DEFAULT_CONFIG):

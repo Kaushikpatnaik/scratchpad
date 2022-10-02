@@ -3,7 +3,6 @@ import utils
 
 import streamlit as st
 import streamlit_authenticator as stauth
-from streamlit_extras.switch_page_button import switch_page
 
 st.set_page_config(
     page_title="Scratchpad: Your personalized assistant",
@@ -34,4 +33,4 @@ if not st.session_state["logged_in"]:
 
     if authenticator.register_user('Register user', preauthorization=False):
             st.success('User registered successfully')
-            switch_page("search")
+            utils.switch_page("search")

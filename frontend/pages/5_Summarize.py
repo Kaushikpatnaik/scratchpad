@@ -82,6 +82,7 @@ def main():
         if button_clicked or selected != "":
             search_endpoint = API_ENDPOINT + "/retrieval_and_summarize"
             response = requests.get(search_endpoint, params={'query': selected, 'user': user_name})
+            print(response)
             if response.status_code == 200:
                 response_json = response.json()
                 st.markdown(
@@ -119,6 +120,7 @@ def main():
                             ]),
                             unsafe_allow_html=True
                             )
+            '''
             else:
                 st.markdown(
                     "<hr />",
@@ -127,6 +129,7 @@ def main():
                 utils.unset_bg_hack()
                 with st.container():
                     st.header("Backend Error!!! :(")
+            '''
 
 
 if __name__ == "__main__":
