@@ -55,7 +55,7 @@ class Crawler(BaseComponent):
         filter_urls: Optional[List] = None,
         overwrite_existing_files=True,
         id_hash_keys: Optional[List[str]] = None,
-        extract_hidden_text=True,
+        extract_hidden_text=False,
         loading_wait_time: Optional[int] = None,
         crawler_naming_function: Optional[Callable[[str, str], str]] = None,
         webdriver_options: Optional[List[str]] = None,

@@ -11,23 +11,17 @@ import utils
 API_ENDPOINT=os.environ.get('API_ENDPOINT', 'http://localhost:8000')
 os.environ["HAYSTACK_TELEMETRY_ENABLED"] = "False"
 
-def parse_search_results(request_json):
-    result_documents = request_json['documents']
-    num_results = len(result_documents)
-    results_dict = {}
-    for idx, result in enumerate(result_documents):
-        # result['meta']['src_type']
-        results_dict[idx] = {'title': result['meta'].get('file_name', "No file name"), 'src_type': result['meta'].get(
-        'src_type', 'yt'), 'content': result['content'], 'score': result['score']}
 
-    return results_dict, num_results
+def parse_summarize_results(request_json):
+    result_documents = request_json['documents']
+    print(result_documents)
+    return result_documents
 
 
 def main():
     st.set_page_config(
         page_title="Scratchpad: Your personalized assistant",
         page_icon="frontend/asset/images/svg-1@2x.png",
-        layout="wide",
         initial_sidebar_state="auto"
     )
 
@@ -80,56 +74,26 @@ def main():
         # if search is pressed need to add containers with search results
         # Add code that pressing enter also launches search
         if button_clicked or selected != "":
-            search_endpoint = API_ENDPOINT + "/retrieval_and_summarize"
+            search_endpoint = API_ENDPOINT + "/summarize"
             response = requests.get(search_endpoint, params={'query': selected, 'user': user_name})
-            print(response)
             if response.status_code == 200:
                 response_json = response.json()
+                content = parse_summarize_results(response_json)
                 st.markdown(
                     "<hr />",
                     unsafe_allow_html=True
                 )
                 utils.unset_bg_hack()
                 with st.container():
-                    st.header("Summary from Scratchpad")
-
-                    results_dict, num_results = parse_search_results(response_json)
-
-                    # dedup based on title
-                    # going to hurt no title data
-                    # since ranker outputs data based on score, selecting highest scoring will be better
-                    uniq_titles = {}
-                    for i in range(num_results):
-                        title_src = results_dict[i]['title'] + results_dict[i]['src_type']
-                        if title_src not in uniq_titles:
-                            uniq_titles[title_src] = i
-
-                    for _, i in uniq_titles.items():
-                        title = results_dict[i]['title']
-                        str_i = str(i)
-                        content = results_dict[i]['content']
-                        thumbnail_image = thumbnail_images[results_dict[i]['src_type']]
-
-                        st.markdown(
+                    st.header("Summarizing results from Scratchpad")
+                    st.markdown(
                             " ".join([
                                 "<div class='results-{str_i} text-wrapper'>",
-                                f"<img src='{thumbnail_image}' align='left' class='img-wrapper'>",
-                                f"<p class='font-body'><b>{title}</b></p>",
                                 f"<p class='font-body'>{content}</p>",
                                 "</div>",
                             ]),
                             unsafe_allow_html=True
                             )
-            '''
-            else:
-                st.markdown(
-                    "<hr />",
-                    unsafe_allow_html=True
-                )
-                utils.unset_bg_hack()
-                with st.container():
-                    st.header("Backend Error!!! :(")
-            '''
 
 
 if __name__ == "__main__":

@@ -48,9 +48,9 @@ DEFAULT_PARAMS = {
     "Ranker": {"top_k": 20}
 }
 DEFAULT_SUMM_PARAMS = {
-    "ESRetriever": {"top_k": 20},
-    "STRetriever": {"top_k": 20},
-    "Ranker": {"top_k": 5}
+    "ESRetriever": {"top_k": 5},
+    "STRetriever": {"top_k": 5},
+    "Ranker": {"top_k": 2}
 }
 BM25_SEARCH_PARAMS = {
     "ESRetriever": {"top_k": 200},

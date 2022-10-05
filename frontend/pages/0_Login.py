@@ -3,7 +3,6 @@ import utils
 
 import streamlit as st
 import streamlit_authenticator as stauth
-from streamlit_extras.switch_page_button import switch_page
 
 st.set_page_config(
         page_title="Scratchpad: Your personalized assistant",
@@ -34,13 +33,13 @@ st.session_state["retries"] = 0
 
 name, authentication_status, username = authenticator.login('Login', 'main')
 if st.button("Reset Password"):
-    switch_page("reset")
+    utils.switch_page("reset")
 
 if st.session_state["authentication_status"]:
     st.session_state["user_name"] = st.session_state["username"]
     st.session_state["logged_in"] = st.session_state["authentication_status"]
     #authenticator.logout('Logout', 'sidebar')
-    switch_page("search")
+    utils.switch_page("search")
 elif st.session_state["authentication_status"] == False:
     st.error("Username/password is incorrect")
 else:

@@ -4,6 +4,7 @@ from pathlib import Path
 from haystack import Pipeline
 from haystack.pipelines import RootNode
 from haystack.nodes.base import BaseComponent
+from haystack.nodes.other import JoinDocuments
 
 from scratchpad.retrievers import get_es_retriever, get_nn_retriever
 from scratchpad.rankers import get_st_ranker
@@ -16,7 +17,7 @@ DEFAULT_CONFIG = {
     "ST_RETRIEVER": "sentence-transformers/all-mpnet-base-v2",
 }
 
-
+'''
 class JoinNode(BaseComponent):
     outgoing_edges = 1
 
@@ -32,7 +33,7 @@ class JoinNode(BaseComponent):
                             output[k] = input_dict[k]
             output['node_id'] = 'Joiner'
         return output, "output_1"
-
+'''
 
 def bm25_ranker_search_pipeline(document_store, config=DEFAULT_CONFIG):
     es_retriever = get_es_retriever(document_store)
@@ -60,11 +61,12 @@ def combined_search_pipeline(document_store, config=DEFAULT_CONFIG):
     es_retriever = get_es_retriever(document_store)
     st_retriever = get_nn_retriever(document_store, config.get("ST_RETRIEVER"))
     st_ranker = get_st_ranker(config.get("RANKER"))
+    join_documents = JoinDocuments(join_mode="concatenate")
 
     p = Pipeline()
     p.add_node(component=es_retriever, name="ESRetriever", inputs=["Query"])
     p.add_node(component=st_retriever, name="STRetriever", inputs=["Query"])
-    p.add_node(component=JoinNode(), name="Joiner", inputs=["ESRetriever", "STRetriever"])
+    p.add_node(component=join_documents, name="Joiner", inputs=["ESRetriever", "STRetriever"])
     p.add_node(component=st_ranker, name="Ranker", inputs=["Joiner"])
 
     return p
