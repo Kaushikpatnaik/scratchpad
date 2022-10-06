@@ -20,7 +20,7 @@ C1_LANDING_HEADING = """
 <div class="headline-div">
 <br>
 <h2 class="font-title" style='text-align: center'><i>Welcome to Scratchpad</i></h2>
-<h3 class="font-title" style='text-align: center'><i>Personalized search engine for your private data</i></h3>
+<h3 class="font-title" style='text-align: center'><i>Personalized co-pilot for your private data</i></h3>
 </div>
 """
 C1_INSTRUCTIONS_INFO = """
@@ -33,6 +33,7 @@ C1_INSTRUCTIONS_INFO = """
 <ul>
   <li>Search across services (twitter, youtube, websites) and documents you interact with</li>
   <li>Search within the documents to fetch relevant information</li>
+  <li>Summarize information from multiple sources</li>
   <li>Natural language queries in addition to keywords</li>
   <li>Completely personalized for your data</li>
   <li>Improves over time, based on interaction</li>
@@ -44,8 +45,9 @@ C1_INSTRUCTIONS_INFO = """
 <div class="number_list">
 <ul style="font-size: 18px";>
   <li>Navigate to homepage</li>
-  <li>Add your documents, websites, youtube urls on the left</li>
+  <li>Add documents, websites, youtube urls on the left</li>
   <li>Perform search within your data</li>
+  <li>Summarize information on a topic</li>
 </ul>
 </div>
 <h3 class="font-title" style='text-align: left'>

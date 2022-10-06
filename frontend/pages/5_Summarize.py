@@ -20,7 +20,7 @@ def parse_summarize_results(request_json):
 
 def main():
     st.set_page_config(
-        page_title="Scratchpad: Your personalized assistant",
+        page_title="Scratchpad: Personalized Co-Pilot",
         page_icon="frontend/asset/images/svg-1@2x.png",
         initial_sidebar_state="auto"
     )

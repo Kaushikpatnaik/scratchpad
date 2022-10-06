@@ -9,7 +9,7 @@ os.environ["HAYSTACK_TELEMETRY_ENABLED"] = "False"
 
 def main():
     st.set_page_config(
-            page_title="Scratchpad: About",
+            page_title="Scratchpad: Personalized Co-Pilot",
             page_icon="frontend/asset/images/svg-1@2x.png",
             layout="wide",
             initial_sidebar_state="collapsed"

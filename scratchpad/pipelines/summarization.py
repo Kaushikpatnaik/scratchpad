@@ -72,7 +72,7 @@ class OpenAISummarize(BaseComponent):
 
         output_document = (
             "\n".join([x[0] for x in results])
-            + "\n\n Sources:"
+            + "\n\n Sources: "
             + "\n".join([x[1] for x in results])
         )
 

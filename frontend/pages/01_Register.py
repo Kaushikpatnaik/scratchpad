@@ -5,13 +5,13 @@ import streamlit as st
 import streamlit_authenticator as stauth
 
 st.set_page_config(
-    page_title="Scratchpad: Your personalized assistant",
+    page_title="Scratchpad: Personalized Co-Pilot",
     page_icon="frontend/asset/images/svg-1@2x.png",
     layout="wide",
     initial_sidebar_state="collapsed"
     )
 
-if not st.session_state["logged_in"]:
+if "logged_in" not in st.session_state:
 
     utils.remote_css('https://fonts.googleapis.com/icon?family=Material+Icons')
     utils.set_bg_hack('frontend/asset/images/background-svg@1x.png')
