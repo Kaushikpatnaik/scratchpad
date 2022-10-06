@@ -20,7 +20,7 @@ st.markdown(""" <style>
     </style> """, unsafe_allow_html=True)
 
 with open('/home/user/frontend/config.yaml') as file:
-        config = yaml.load(file, Loader=yaml.SafeLoader)
+    config = yaml.load(file, Loader=yaml.SafeLoader)
 
 authenticator = stauth.Authenticate(
         config['credentials'],
@@ -35,7 +35,9 @@ try:
         st.success('New password sent securely')
         # Random password to be transferred to user securely
         st.write(random_password)
-        st.write("Please keep new password safe")
+        with open('/home/user/frontend/config.yaml', 'w') as file:
+            doc = yaml.dump(config, file)
+        st.write("Please keep new password safe. You can now head to the login page using the sidebar")
     elif username_forgot_pw == False:
         st.error('Username not found')
 except Exception as e:

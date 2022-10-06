@@ -1,16 +1,20 @@
-credentials:
-  usernames:
-    demo:
-      email: kaushikpatnaik@gmail.com
-      name: kaushikpatnaik
-      password: $2b$12$7Z9Q3shHgr5wehWiZrgtvOvdbhmmHS5uqLz0ZwG6TlDtRAq.9NBYa
-    ycombinator:
-      email: ycombinator
-      name: ycombinator
-      password: $2b$12$N/XkmE7xNdAZ32eBYy4q.uadW9SspnrQ.gGEU4R0FUfywXmVGK7qq
 cookie:
   expiry_days: 2
   key: some_signature_key
   name: some_cookie_name
+credentials:
+  usernames:
+    demo:
+      email: demoemail@gmail.com
+      name: demo
+      password: $2b$12$7Z9Q3shHgr5wehWiZrgtvOvdbhmmHS5uqLz0ZwG6TlDtRAq.9NBYa
+    kaushik:
+      email: kaushikpatnaik@gmail.com
+      name: kaushik
+      password: $2b$12$Z83WXuiXMxl0wZiutZzN.OruguiiBO.csOLD/cCtulW8OM0vb0b2m
+    ycombinator:
+      email: ycombinator
+      name: ycombinator
+      password: $2b$12$N/XkmE7xNdAZ32eBYy4q.uadW9SspnrQ.gGEU4R0FUfywXmVGK7qq
 preauthorized:
-  emails:
+  emails: null

@@ -22,7 +22,7 @@ if "logged_in" not in st.session_state:
     </style> """, unsafe_allow_html=True)
 
     with open('/home/user/frontend/config.yaml') as file:
-            config = yaml.load(file, Loader=yaml.SafeLoader)
+        config = yaml.load(file, Loader=yaml.SafeLoader)
 
     authenticator = stauth.Authenticate(
             config['credentials'],
@@ -32,5 +32,7 @@ if "logged_in" not in st.session_state:
             config['preauthorized'])
 
     if authenticator.register_user('Register user', preauthorization=False):
-            st.success('User registered successfully')
-            utils.switch_page("search")
+        st.success('User registered successfully')
+        with open('/home/user/frontend/config.yaml', 'w') as file:
+            doc = yaml.dump(config, file)
+        utils.switch_page("login")

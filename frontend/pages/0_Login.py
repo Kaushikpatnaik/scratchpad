@@ -20,7 +20,7 @@ st.markdown(""" <style>
     </style> """, unsafe_allow_html=True)
 
 with open('/home/user/frontend/config.yaml') as file:
-        config = yaml.load(file, Loader=yaml.SafeLoader)
+    config = yaml.load(file, Loader=yaml.SafeLoader)
 
 authenticator = stauth.Authenticate(
         config['credentials'],
