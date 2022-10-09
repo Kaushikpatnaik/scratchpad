@@ -16,6 +16,7 @@ RUN apt-get update && apt-get install -y software-properties-common && \
 
 RUN pip install --upgrade streamlit
 RUN pip install streamlit-authenticator
+RUN pip install bs4
 
 EXPOSE 8501
 
