@@ -34,7 +34,7 @@ def main():
 
         st.markdown(utils.C1_INSTRUCTIONS_INFO, unsafe_allow_html=True)
 
-        st.video("https://youtu.be/I43YETWiqzg")
+        st.video("https://youtu.be/S-ak1jX9kEc")
 
     with col3:
 
