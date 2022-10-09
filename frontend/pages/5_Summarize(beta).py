@@ -25,7 +25,7 @@ def main():
         initial_sidebar_state="auto"
     )
 
-    if st.session_state["logged_in"]:
+    if st.session_state.get("logged_in", False):
 
         #utils.local_css("frontend/asset/css/style.css")
         utils.remote_css('https://fonts.googleapis.com/icon?family=Material+Icons')
@@ -66,10 +66,11 @@ def main():
         st.markdown(utils.C1_SEARCH_BOX_INFO, unsafe_allow_html=True)
         
         # need to do column hacking to place search box and buttom at center
-        col1, col2, col3 = st.columns([3,4,3])
+        col1, col2, col3 = st.columns([2,5,2])
         with col2:
             selected = st.text_input("")
             button_clicked = st.button("Summarize")
+            st.markdown(utils.C1_SUMMARIZE_INFO, unsafe_allow_html=True)
             
         # if search is pressed need to add containers with search results
         # Add code that pressing enter also launches search
@@ -94,6 +95,11 @@ def main():
                             ]),
                             unsafe_allow_html=True
                             )
+            else:
+                with st.container():
+                    utils.error_frontend("Request failed due to backend error")
+    else:
+        utils.error_frontend("Cookie Expired. Please Log in again from the sidebar")
 
 
 if __name__ == "__main__":

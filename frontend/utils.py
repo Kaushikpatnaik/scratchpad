@@ -33,7 +33,7 @@ C1_INSTRUCTIONS_INFO = """
 <ul>
   <li>Search across services (twitter, youtube, websites) and documents you interact with</li>
   <li>Search within the documents to fetch relevant information</li>
-  <li>Summarize information from multiple sources</li>
+  <li>(new) Summarize information from multiple sources</li>
   <li>Natural language queries in addition to keywords</li>
   <li>Completely personalized for your data</li>
   <li>Improves over time, based on interaction</li>
@@ -47,12 +47,27 @@ C1_INSTRUCTIONS_INFO = """
   <li>Navigate to homepage</li>
   <li>Add documents, websites, youtube urls on the left</li>
   <li>Perform search within your data</li>
-  <li>Summarize information on a topic</li>
+  <li>(new) Summarize information on a topic</li>
 </ul>
 </div>
 <h3 class="font-title" style='text-align: left'>
 &emsp; Demo
 </h3>
+</div>
+"""
+C1_SUMMARIZE_INFO = """
+<div class="summarize-instructions-div">
+<br>
+<h3 class="font-title" style='text-align: left'>
+&emsp; About Summarization
+</h3>
+<div class="number_list">
+<ul>
+  <li>It is a beta feature being developed to help users review a topic quickly
+  <li>As a first step, documents relevant to the topic are obtained
+  <li>Summarization (without training) is carried out on each document and results are aggregated</li>
+  <li>Results will change based on topic and relevant documents
+</ul>
 </div>
 """
 
@@ -144,6 +159,16 @@ def unset_bg_hack():
 
 
 import streamlit as st
+
+
+def error_frontend(text):
+    st.markdown(
+        "<hr />",
+        unsafe_allow_html=True
+    )
+    unset_bg_hack()
+    with st.container():
+        st.header(text)
 
 
 def switch_page(page_name: str):

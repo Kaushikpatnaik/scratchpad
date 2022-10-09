@@ -46,3 +46,6 @@ services:
     environment:
       - API_ENDPOINT=http://scratchpad-api:8000
     command: "/bin/bash -c 'streamlit run frontend/Welcome.py'"
+volumes:
+  esdata:
+    driver: local

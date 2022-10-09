@@ -43,7 +43,7 @@ def main():
         initial_sidebar_state="auto"
     )
 
-    if st.session_state["logged_in"]:
+    if st.session_state.get("logged_in", False):
 
         #utils.local_css("frontend/asset/css/style.css")
         utils.remote_css('https://fonts.googleapis.com/icon?family=Material+Icons')
@@ -133,13 +133,9 @@ def main():
                             unsafe_allow_html=True
                             )
             else:
-                st.markdown(
-                    "<hr />",
-                    unsafe_allow_html=True
-                )
-                utils.unset_bg_hack()
-                with st.container():
-                    st.header("Backend Error!!! :(")
+                utils.error_frontend("Request failed due to backend error")
+    else:
+        utils.error_frontend("Cookie Expired. Please Log in again from the sidebar")
 
 
 if __name__ == "__main__":

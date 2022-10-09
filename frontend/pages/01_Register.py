@@ -36,3 +36,5 @@ if "logged_in" not in st.session_state:
         with open('/home/user/frontend/config.yaml', 'w') as file:
             doc = yaml.dump(config, file)
         utils.switch_page("login")
+else:
+    utils.error_frontend("Logged in users cannot register")
