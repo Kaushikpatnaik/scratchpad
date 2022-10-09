@@ -15,6 +15,8 @@ def main():
             initial_sidebar_state="collapsed"
         )
 
+    utils.inject_ga()
+
     utils.local_css("frontend/asset/css/style.css")
     utils.remote_css('https://fonts.googleapis.com/icon?family=Material+Icons')
     utils.set_bg_hack('frontend/asset/images/background-svg@1x.png')
