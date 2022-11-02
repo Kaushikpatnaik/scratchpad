@@ -53,7 +53,7 @@ COPY ./requirements.txt /home/user/requirements.txt
 #RUN pip install -r /home/user/requirements.txt
 
 # download haystack repository for install
-RUN git clone https://github.com/deepset-ai/haystack.git
+RUN git clone -b v1.9.1 https://github.com/deepset-ai/haystack.git
 RUN pip install /home/user/haystack[all-gpu,ocr,crawler,preprocessing]
 RUN pip install torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cu113 --upgrade
 

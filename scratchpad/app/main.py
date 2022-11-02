@@ -35,6 +35,7 @@ from scratchpad.pipelines.semantic_search_pipeline import (
     combined_search_pipeline
 )
 from scratchpad.pipelines.summarization import summarize_pipeline, pipeline_summarize
+from scratchpad.pipelines.qa import pipeline_qa, qa_pipeline
 
 
 DEFAULT_CONFIG = {
@@ -51,6 +52,11 @@ DEFAULT_SUMM_PARAMS = {
     "ESRetriever": {"top_k": 5},
     "STRetriever": {"top_k": 5},
     "Ranker": {"top_k": 2}
+}
+DEFAULT_QA_PARAMS = {
+    "ESRetriever": {"top_k": 5},
+    "STRetriever": {"top_k": 5},
+    "Ranker": {"top_k": 5}
 }
 BM25_SEARCH_PARAMS = {
     "ESRetriever": {"top_k": 200},
@@ -74,7 +80,7 @@ st_retriever = get_nn_retriever(document_store, DEFAULT_CONFIG.get("ST_RETRIEVER
 #dense_ranker = dense_retriever_ranker_search_pipeline(document_store, config=DEFAULT_CONFIG)
 comb_ranker = combined_search_pipeline(document_store, config=DEFAULT_CONFIG)
 summarizer = summarize_pipeline(document_store, config=DEFAULT_CONFIG)
-
+qa = qa_pipeline(document_store, config=DEFAULT_CONFIG)
 
 app = FastAPI()
 
@@ -137,6 +143,12 @@ def retrieval_and_summarize(query: str, user: str):
     summary_results = pipeline_summarize(query, summarizer, params=params)
     return summary_results
 
+@app.get("/qa")
+def retrieval_and_summarize(query: str, user: str):
+    params = DEFAULT_QA_PARAMS
+    params["filters"] = {"user": user}
+    qa_results = pipeline_qa(query, qa, params=params)
+    return qa_results
 
 @app.get("/user_click_search")
 def click_search_result(result: str, user: str):

@@ -75,6 +75,21 @@ C1_SUMMARIZE_INFO = """
 </ul>
 </div>
 """
+C1_QA_INFO = """
+<div class="question-answer-instructions-div">
+<br>
+<h3 class="font-title" style='text-align: left'>
+&emsp; About Question Answering
+</h3>
+<div class="number_list">
+<ul>
+  <li>It is a beta feature being developed to help users answer a question quickly
+  <li>As a first step, documents relevant to the question are obtained
+  <li>Question Answering (without training) is carried out on each document and results are aggregated</li>
+  <li>Results will change based on topic and relevant documents
+</ul>
+</div>
+"""
 google_analytics_js = """
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-BTWX2VWW52"></script>

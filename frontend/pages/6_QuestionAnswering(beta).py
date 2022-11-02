@@ -12,8 +12,8 @@ API_ENDPOINT=os.environ.get('API_ENDPOINT', 'http://localhost:8000')
 os.environ["HAYSTACK_TELEMETRY_ENABLED"] = "False"
 
 
-def parse_summarize_results(request_json):
-    result_documents = request_json['documents']
+def parse_qa_results(request_json):
+    result_documents = request_json['answers']
     return result_documents
 
 
@@ -68,24 +68,24 @@ def main():
         col1, col2, col3 = st.columns([2,5,2])
         with col2:
             selected = st.text_input("")
-            button_clicked = st.button("Summarize")
-            st.markdown(utils.C1_SUMMARIZE_INFO, unsafe_allow_html=True)
+            button_clicked = st.button("Fetch Answer")
+            st.markdown(utils.C1_QA_INFO, unsafe_allow_html=True)
             
         # if search is pressed need to add containers with search results
         # Add code that pressing enter also launches search
         if button_clicked or selected != "":
-            search_endpoint = API_ENDPOINT + "/summarize"
+            search_endpoint = API_ENDPOINT + "/qa"
             response = requests.get(search_endpoint, params={'query': selected, 'user': user_name})
             if response.status_code == 200:
                 response_json = response.json()
-                content = parse_summarize_results(response_json)
+                content = parse_qa_results(response_json)
                 st.markdown(
                     "<hr />",
                     unsafe_allow_html=True
                 )
                 utils.unset_bg_hack()
                 with st.container():
-                    st.header("Summarizing results from Scratchpad")
+                    st.header("Answers from Scratchpad")
                     st.markdown(
                             " ".join([
                                 "<div class='results-{str_i} text-wrapper'>",

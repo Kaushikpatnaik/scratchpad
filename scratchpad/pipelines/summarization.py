@@ -35,7 +35,7 @@ class OpenAISummarize(BaseComponent):
                 model="text-davinci-002",
                 prompt=doc.content + ".\n\nTl;dr",
                 temperature=0.7,
-                max_tokens=100,
+                max_tokens=512,
                 top_p=1.0,
                 frequency_penalty=0.0,
                 presence_penalty=0.0,
@@ -59,9 +59,9 @@ class OpenAISummarize(BaseComponent):
             response = openai.Completion.create(
                 model="text-davinci-002",
                 prompt=doc.content + ".\n\nTl;dr",
-                temperature=0.7,
-                max_tokens=100,
-                top_p=1.0,
+                temperature=0.1,
+                max_tokens=512,
+                top_p=0.95,
                 frequency_penalty=0.0,
                 presence_penalty=0.0,
             )
