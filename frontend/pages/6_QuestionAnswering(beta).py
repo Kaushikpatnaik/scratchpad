@@ -13,7 +13,9 @@ os.environ["HAYSTACK_TELEMETRY_ENABLED"] = "False"
 
 
 def parse_qa_results(request_json):
-    result_documents = request_json['answers']
+    result_documents = []
+    for idx, doc in enumerate(request_json['answers']):
+        result_documents.append(f"Answer {idx}: {doc['answer']}")
     return result_documents
 
 

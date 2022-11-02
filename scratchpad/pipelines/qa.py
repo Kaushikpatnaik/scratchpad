@@ -1,12 +1,6 @@
 import logging
 from typing import Optional, List
 
-import random
-from collections import namedtuple
-import openai
-
-from datasets import load_dataset
-
 from haystack.schema import Document
 from haystack import Pipeline
 from haystack.nodes.base import BaseComponent
